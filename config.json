@@ -22,7 +22,70 @@
 	],
 	
 	"project-settings": [
-		
+		{
+			"key": "icons",
+			"name": "Dashboard Icon List",
+			"required": true,
+			"type": "sub_settings",
+			"repeatable":true,
+			"sub_settings":[
+				{
+					"key": "icon_upload",
+					"name": "Upload Icon",
+					"required": true,
+					"type": "file",
+					"repeatable": false
+				},
+				{
+					"key": "icon_label",
+					"name": "Icon Label",
+					"required": true,
+					"type": "text"
+				},
+				{
+					"key": "icon_links",
+					"name": "Icon Links",
+					"required": true,
+					"type": "sub_settings",
+					"repeatable": true,
+					"sub_settings": [
+						{
+							"key": "link_url",
+							"name": "Link URL",
+							"required": true,
+							"type": "text"
+						},
+						{
+							"key": "link_label",
+							"name": "Link Display Text",
+							"required": true,
+							"type": "text"
+						}
+					]
+				}
+			]
+		},
+		{
+			"key": "footer_links",
+			"name": "Footer Links",
+			"required": true,
+			"type": "sub_settings",
+			"repeatable": true,
+			"sub_settings": [
+				{
+					"key": "foot_link_url",
+					"name": "Link URL",
+					"required": true,
+					"type": "text"
+				},
+				{
+					"key": "foot_link_label",
+					"name": "Link Display Text",
+					"required": true,
+					"type": "text"
+				}
+			]
+		}
    	],
 	
 	"framework-version": 2
