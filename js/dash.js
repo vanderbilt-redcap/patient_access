@@ -12,4 +12,11 @@ $(function() {
 	
 	// add dashboard html
 	$("#container").html(DASH_HTML);
+	
+	$("button").on("click", function() {
+		$(".linkset").hide();
+		let target = $("#" + $(this).attr("target"));
+		target.html("<span>Links</span>");
+		target.show();
+	});
 });

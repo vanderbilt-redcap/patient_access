@@ -1,9 +1,15 @@
 // recompile command (when working in css folder):
 //sass.bat base.scss base.css
 
-@import "_normalize.scss";
-@import "bootstrap/scss/bootstrap.scss";
+// @import "_normalize.scss";
+// @import "bootstrap/scss/bootstrap.scss";
 
-p {
-	color: black;
+.icons {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-evenly;
+	button {
+		margin-top: 8px;
+	}
 }

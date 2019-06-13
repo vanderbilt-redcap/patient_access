@@ -1,5 +1,11 @@
-p {
-  color: black;
+.icons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+}
+.icons button {
+  margin-top: 8px;
 }
 
 /*# sourceMappingURL=dash.css.map */
