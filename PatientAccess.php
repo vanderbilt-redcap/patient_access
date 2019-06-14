@@ -32,7 +32,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 				$doc_ids[] = $doc_id;
 			}
 		}
-		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($iconLinks, true) . "\n", FILE_APPEND);
+		file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// query db for icon file paths on server
 		$doc_ids = "(" . implode($doc_ids, ", ") . ")";
@@ -48,43 +48,82 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// start building html string
 		$html = '
-<div id="dashboard">';
+<div id="dashboard">
+	<div id="icons" class="card">
+		<h3 class="card-title">Patient Access Dashboard</h3>
+		<div class="card-body">';
 		
-		$maxIconsPerRow = 3;
-		$iconCounter = $maxIconsPerRow;
-		$rowCounter = 1;
 		foreach ($icons as $i => $icon) {
-			// if iconCounter == 0, need new row
-			if ($iconCounter == $maxIconsPerRow) {
-				$targetLinkSet = "linkset$rowCounter";
-				$html .= "
-	<div class=\"card\">
-		<div class=\"icons card-title\">";
-			}
-			// add icon button to row
-			// $iconPath = $icon["path"];
-			// $iconLabel = $icon["label"];
 			$html .= "
-			<button class=\"btn btn-primary\" target=\"$targetLinkSet\" data-icon-index=\"$i\" type=\"button\">
+			<button class=\"btn btn-primary\" data-icon-index=\"$i\" type=\"button\">
 				<img src=\"/redcap/edocs/{$icon["path"]}\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
 			</button>";
-			$iconCounter--;
-			
-			// finish row if at max icons or last icon
-			if ($iconCounter == 0 or ($i == count($icons) - 2)) {
-				$html .= "
-		</div>
-		<div class=\"collapse linkset\" id=\"$targetLinkSet\">
-			<div class=\"card-body\">
-			</div>
-		</div>
-	</div>";
-				$rowCounter++;
-				$iconCounter = $maxIconsPerRow;
-			}
 		}
-		$html .= "
-</div>";
+		$html .= '
+		</div>
+	</div>
+	<div id="iconLinks" class="card">
+		<h5 class="card-title">Links</h5>
+		<ul class="card-body">
+		</ul>
+	</div>
+	<div id="footerLinks" class="card">
+		<h5 class="card-title">More Resources</h5>
+		<ul class="card-body">';
+		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
+			$html .= "
+			<li><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></li>";
+		}
+		$html .= '
+		</ul>
+	</div>
+</div>';
+		
+		// $html = <<< EOF
+// <div id="dashboard">
+	// <div id="icons" class="card">
+		// <h3 class="card-title">Patient Access Dashboard</h3>
+		// <div class="card-body">
+			// <button class=\"btn btn-primary\" data-icon-index=\"0\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 1</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"1\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 2</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"2\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 3</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"3\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 4</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"4\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 5</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"5\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 6</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"6\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 7</small>
+			// </button>
+			// <button class=\"btn btn-primary\" data-icon-index=\"7\" type=\"button\">
+				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 8</small>
+			// </button>
+		// </div>
+	// </div>
+	// <div id="iconLinks" class="card">
+		// <h5 class="card-title">Links</h5>
+		// <ul class="card-body">
+		// </ul>
+	// </div>
+	// <div id="footerLinks" class="card">
+		// <h5 class="card-title">More Resources</h5>
+		// <ul class="card-body">
+			// <li><a href="http://localhost/redcap/">An Apple a Day</a></li>
+			// <li><a href="http://localhost/redcap/">Keeps the Doctor Away</a></li>
+		// </ul>
+	// </div>
+// </div>
+// EOF;
 		
 		// // alternatively, for testing, use baked html shim
 		// $html = file_get_contents($this->getUrl("html/dashboard.html"));

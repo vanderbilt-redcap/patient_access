@@ -11,21 +11,20 @@ $(function() {
 	
 	// add dashboard html
 	$("#container").html(DASH_HTML);
+	$("#iconLinks").hide();
 	
 	$("button").on("click", function() {
-		$(".linkset").hide();
-		let target = $("#" + $(this).attr("target"));
 		let iconIndex = $(this).attr("data-icon-index");
-		let html = `
-				<ul>`;
+		let html = "";
 		PatientAccessModule.iconLinks[iconIndex].forEach(function(link) {
 			html += `
 					<li><a href="javascript:PatientAccessModule.openLink('${link.url}')">${link.label}</li>`;
 		});
-		html += `
-				</ul>`;
-		target.html(html);
-		target.show();
+		$("#iconLinks ul").html(html);
+		// change links div card title header
+		console.log($(this).find("small").text());
+		$("#iconLinks h5").text($(this).find("small").text() + " Links");
+		$("#iconLinks").show();
 	});
 });
 
