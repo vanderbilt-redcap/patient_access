@@ -7,9 +7,11 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// get settings so we can fetch icon and link info
 		$settings = $this->getProjectSettings();
+		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// build icons array so we can send 1 query to db for icon file paths
 		$icons = [];
+		$iconLinks = [];
 		$doc_ids = [];
 		foreach ($settings["icon_upload"]["value"] as $i => $doc_id) {
 			if (!empty($doc_id)) {
@@ -17,9 +19,20 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 					"doc_id" => $doc_id,
 					"label" => $settings["icon_label"]["value"][$i]
 				];
+				foreach ($settings["link_url"]["value"][$i] as $j => $url) {
+					if (isset($settings["link_label"]["value"][$i][$j])) {
+						if (!isset($iconLinks[$i]))
+							$iconLinks[$i] = [];
+						$iconLinks[$i][] = [
+							"label" => $settings["link_label"]["value"][$i][$j],
+							"url" => $url
+						];
+					}
+				}
 				$doc_ids[] = $doc_id;
 			}
 		}
+		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($iconLinks, true) . "\n", FILE_APPEND);
 		
 		// query db for icon file paths on server
 		$doc_ids = "(" . implode($doc_ids, ", ") . ")";
@@ -37,12 +50,12 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		$html = '
 <div id="dashboard">';
 		
-		$counter = 0;
-		$maxIconsPerRow = 5;
+		$maxIconsPerRow = 3;
+		$iconCounter = $maxIconsPerRow;
 		$rowCounter = 1;
 		foreach ($icons as $i => $icon) {
-			// if counter == 0, need new row
-			if ($counter == 0) {
+			// if iconCounter == 0, need new row
+			if ($iconCounter == $maxIconsPerRow) {
 				$targetLinkSet = "linkset$rowCounter";
 				$html .= "
 	<div class=\"card\">
@@ -52,23 +65,22 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			// $iconPath = $icon["path"];
 			// $iconLabel = $icon["label"];
 			$html .= "
-			<button class=\"btn btn-primary\" target=\"$targetLinkSet\" type=\"button\">
-				<img src=\"/redcap/edocs/{$icon["path"]}\" width=\"24\" height=\"24\"></img>&nbsp&nbsp&nbsp{$icon["label"]}
+			<button class=\"btn btn-primary\" target=\"$targetLinkSet\" data-icon-index=\"$i\" type=\"button\">
+				<img src=\"/redcap/edocs/{$icon["path"]}\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
 			</button>";
-			$counter++;
+			$iconCounter--;
 			
 			// finish row if at max icons or last icon
-			if ($counter == $maxIconsPerRow or $i == (count($icons) - 1)) {
+			if ($iconCounter == 0 or ($i == count($icons) - 2)) {
 				$html .= "
 		</div>
 		<div class=\"collapse linkset\" id=\"$targetLinkSet\">
-			<div class=\"card card-body\">
-				blah blah blah
+			<div class=\"card-body\">
 			</div>
 		</div>
 	</div>";
 				$rowCounter++;
-				$counter = $maxIconsPerRow;
+				$iconCounter = $maxIconsPerRow;
 			}
 		}
 		$html .= "
@@ -82,8 +94,12 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash.css"), $dashboardScript);
 		$dashboardScript = str_replace("BOOTSTRAP_URL", $this->getUrl("js/bootstrap.min.js"), $dashboardScript);
 		$dashboardScript = str_replace("DASH_HTML", "`$html`", $dashboardScript);
+		$linksTableJSON = json_encode($iconLinks);
 		$js = <<< EOF
 		<script type="text/javascript">
+			PatientAccessModule = {
+				"iconLinks": JSON.parse(`$linksTableJSON`)
+			};
 			$dashboardScript
 		</script>
 EOF;

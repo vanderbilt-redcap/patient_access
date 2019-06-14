@@ -39,7 +39,7 @@
 				{
 					"key": "icon_label",
 					"name": "Icon Label",
-					"required": true,
+					"required": false,
 					"type": "text"
 				},
 				{
@@ -58,7 +58,7 @@
 						{
 							"key": "link_label",
 							"name": "Link Display Text",
-							"required": true,
+							"required": false,
 							"type": "text"
 						}
 					]
