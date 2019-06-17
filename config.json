@@ -23,6 +23,12 @@
 	
 	"project-settings": [
 		{
+			"key": "survey_hash",
+			"name": "Survey Hash to Override",
+			"required": true,
+			"type": "text"
+		},
+		{
 			"key": "icons",
 			"name": "Dashboard Icon List",
 			"required": true,

@@ -3,10 +3,15 @@ namespace Vanderbilt\PatientAccess;
 
 class PatientAccess extends \ExternalModules\AbstractExternalModule {
 	function redcap_survey_page($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $survey_hash, $response_id = NULL, $repeat_instance = 1) {
-		file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", "beginning log...\n");
+		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", "beginning log...\n");
 		
 		// get settings so we can fetch icon and link info
 		$settings = $this->getProjectSettings();
+		
+		if ($settings["survey_hash"]["value"] != $survey_hash) {
+			// not the survey we want to override
+			return;
+		}
 		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// build icons array so we can send 1 query to db for icon file paths
@@ -32,7 +37,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 				$doc_ids[] = $doc_id;
 			}
 		}
-		file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
+		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// query db for icon file paths on server
 		$doc_ids = "(" . implode($doc_ids, ", ") . ")";
@@ -78,52 +83,6 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		</ul>
 	</div>
 </div>';
-		
-		// $html = <<< EOF
-// <div id="dashboard">
-	// <div id="icons" class="card">
-		// <h3 class="card-title">Patient Access Dashboard</h3>
-		// <div class="card-body">
-			// <button class=\"btn btn-primary\" data-icon-index=\"0\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 1</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"1\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 2</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"2\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 3</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"3\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 4</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"4\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 5</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"5\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 6</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"6\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 7</small>
-			// </button>
-			// <button class=\"btn btn-primary\" data-icon-index=\"7\" type=\"button\">
-				// <img src=\"/redcap/edocs/20190614161749_pid36_sINNtu.svg\" width=\"24\" height=\"24\"></img><small>Clinic 8</small>
-			// </button>
-		// </div>
-	// </div>
-	// <div id="iconLinks" class="card">
-		// <h5 class="card-title">Links</h5>
-		// <ul class="card-body">
-		// </ul>
-	// </div>
-	// <div id="footerLinks" class="card">
-		// <h5 class="card-title">More Resources</h5>
-		// <ul class="card-body">
-			// <li><a href="http://localhost/redcap/">An Apple a Day</a></li>
-			// <li><a href="http://localhost/redcap/">Keeps the Doctor Away</a></li>
-		// </ul>
-	// </div>
-// </div>
-// EOF;
 		
 		// // alternatively, for testing, use baked html shim
 		// $html = file_get_contents($this->getUrl("html/dashboard.html"));
