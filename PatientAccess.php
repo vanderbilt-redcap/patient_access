@@ -59,9 +59,10 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		<div class="card-body">';
 		
 		foreach ($icons as $i => $icon) {
+			$edocPath = EDOC_PATH;
 			$html .= "
 			<button class=\"btn btn-primary\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"/redcap/edocs/{$icon["path"]}\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
+				<img src=\"$edocPath{$icon["path"]}\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
