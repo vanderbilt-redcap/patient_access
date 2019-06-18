@@ -41,12 +41,13 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// query db for icon file paths on server
 		$doc_ids = "(" . implode($doc_ids, ", ") . ")";
-		$sql = "SELECT doc_id, stored_name FROM redcap_edocs_metadata WHERE doc_id in $doc_ids";
+		$sql = "SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id in $doc_ids";
 		$result = db_query($sql);
 		while ($row = db_fetch_assoc($result)) {
 			foreach ($icons as $i => $iconArray) {
 				if ($iconArray["doc_id"] == $row["doc_id"]) {
-					$icons[$i]["path"] = $row["stored_name"];
+					$icons[$i]["stored_name"] = $row["stored_name"];
+					$icons[$i]["mime_type"] = $row["mime_type"];
 				}
 			}
 		}
@@ -59,10 +60,11 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		<div class="card-body">';
 		
 		foreach ($icons as $i => $icon) {
-			// $imgPath = EDOC_PATH . $icon["path"];
+			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
+			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
 			<button class=\"btn btn-primary\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"image.php?img={$icon["path"]}\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
+				<img src=\"$iconSrc\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
