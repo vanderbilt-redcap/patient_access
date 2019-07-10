@@ -29,6 +29,12 @@
 			"type": "text"
 		},
 		{
+			"key": "dashboard_title",
+			"name": "Dashboard Title",
+			"required": true,
+			"type": "text"
+		},
+		{
 			"key": "icons",
 			"name": "Dashboard Icon List",
 			"required": true,

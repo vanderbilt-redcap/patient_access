@@ -56,15 +56,15 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		$html = '
 <div id="dashboard">
 	<div id="icons" class="card">
-		<h3 class="card-title">Patient Access Dashboard</h3>
+		<h3 class="card-title">' . $settings['dashboard_title']['value'] . '</h3>
 		<div class="card-body">';
 		
 		foreach ($icons as $i => $icon) {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
-			<button class=\"btn btn-primary\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"$iconSrc\" width=\"24\" height=\"24\"></img><small>{$icon["label"]}</small>
+			<button class=\"btn\" data-icon-index=\"$i\" type=\"button\">
+				<img src=\"$iconSrc\" ></img><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
@@ -72,8 +72,10 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 	</div>
 	<div id="iconLinks" class="card">
 		<h5 class="card-title">Links</h5>
-		<ul class="card-body">
-		</ul>
+		<div>
+			<ul class="card-body">
+			</ul>
+		</div>
 	</div>
 	<div id="footerLinks" class="card">
 		<h5 class="card-title">More Resources</h5>
@@ -87,6 +89,46 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 	</div>
 </div>';
 		
+		// $footer_html = "
+		// <div id='pas_footer'>";
+		
+		// // add odd numbered footer links row
+		// foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
+				// $footer_html .= "
+			// <a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a>";
+		// }
+		// $footer_html .= "
+		// </div>";
+		
+		
+		$footer_html = "
+		<div id='pasfooter'>
+			<table>
+				<tr>";
+		
+		// add odd numbered footer links row
+		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
+			if ($j % 2 == 0) {
+				$footer_html .= "
+					<td><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+			}
+		}
+		$footer_html .= "
+				</tr>
+				<tr>";
+		
+		// add even numbered footer links row
+		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
+			if ($j % 2 != 0) {
+				$footer_html .= "
+					<td><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+			}
+		}
+		$footer_html .= "
+				</tr>
+			</table>
+		</div>";
+		
 		// // alternatively, for testing, use baked html shim
 		// $html = file_get_contents($this->getUrl("html/dashboard.html"));
 		
@@ -95,6 +137,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash.css"), $dashboardScript);
 		$dashboardScript = str_replace("BOOTSTRAP_URL", $this->getUrl("js/bootstrap.min.js"), $dashboardScript);
 		$dashboardScript = str_replace("DASH_HTML", "`$html`", $dashboardScript);
+		$dashboardScript = str_replace("FOOTER_HTML", "`$footer_html`", $dashboardScript);
 		$linksTableJSON = json_encode($iconLinks);
 		$js = <<< EOF
 		<script type="text/javascript">

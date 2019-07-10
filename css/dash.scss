@@ -60,12 +60,51 @@ html, body, #pagecontainer {
 		padding: 0;
 		margin: 0;
 		
-		button {
-			margin: 12px 8px;
-		}
 		small {
 			margin-left: 8px;
 		}
+	}
+}
+		
+button {
+	margin: 8px 8px;
+	// background-color: #3344BB;
+	background-color: #FFFFFF00;
+	border: 1px solid #000;
+	width: 128px;
+	height: 128px;
+	img {
+		width: 96px;
+		height: 96px;
+	}
+}
+
+#iconLinks {
+	div {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		button {
+			margin-right: 96px;
+			img {
+				width: 72px;
+				height: 72px;
+			}
+			height: 96px;
+			width: 96px;
+		}
+	}
+}
+
+#pasfooter {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	margin-right: 16px;
+	a {
+		font-size: 16px;
+		color: white;
+		margin: 4px 8px;
 	}
 }
 

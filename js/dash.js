@@ -11,6 +11,7 @@ $(function() {
 	
 	// add dashboard html
 	$("#container").html(DASH_HTML);
+	$("#container").after(FOOTER_HTML);
 	$("#iconLinks").hide();
 	
 	$("button").on("click", function() {
@@ -24,6 +25,15 @@ $(function() {
 		// change links div card title header
 		console.log($(this).find("small").text());
 		$("#iconLinks h5").text($(this).find("small").text() + " Links");
+		
+		// add (or replace) icon in #iconLinks
+		$("#iconLinks div").find("button").remove();
+		$("#iconLinks div").append($(this).clone());
+		$("#iconLinks div").find("button img").css({
+			"height": 64,
+			"width": 64
+		});
+		
 		$("#iconLinks").show();
 	});
 });
@@ -32,6 +42,12 @@ PatientAccessModule.openLink = function(url) {
 	$("#survey").remove();
 	$("#container").append(`
 	<div id="survey">
-		<iframe src="${url}"text</iframe>
+		<iframe src="${url}"</iframe>
 	</div>`);
+	
+	// expand survey container to fill width
+	$('iframe').on('load', function() {
+		$('iframe').contents().find("head")
+			.append("<style type='text/css'>  #pagecontainer{max-width: none;}  </style>");
+	});
 }
