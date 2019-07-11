@@ -77,16 +77,6 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			</ul>
 		</div>
 	</div>
-	<div id="footerLinks" class="card">
-		<h5 class="card-title">More Resources</h5>
-		<ul class="card-body">';
-		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
-			$html .= "
-			<li><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></li>";
-		}
-		$html .= '
-		</ul>
-	</div>
 </div>';
 		
 		// $footer_html = "

@@ -29,9 +29,11 @@ html, body, #pagecontainer {
 }
 #dashboard .card {
   padding: 12px;
+  background-color: #333;
 }
 #dashboard h3, #dashboard h5 {
   text-align: center;
+  color: white;
 }
 #dashboard ul {
   margin: 0px 12%;
