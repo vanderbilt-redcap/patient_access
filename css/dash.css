@@ -40,6 +40,7 @@ html, body, #pagecontainer {
 }
 #dashboard ul a {
   font-size: 20px;
+  color: white;
 }
 #dashboard ul li {
   font-size: 20px;

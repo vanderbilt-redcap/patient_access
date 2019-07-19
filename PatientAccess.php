@@ -100,7 +100,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 == 0) {
 				$footer_html .= "
-					<td><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -111,7 +111,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 != 0) {
 				$footer_html .= "
-					<td><a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "

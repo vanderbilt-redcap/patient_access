@@ -49,8 +49,13 @@ html, body, #pagecontainer {
 	
 	ul {
 		margin: 0px 12%;
-		a {font-size: 20px;}
-		li {font-size: 20px;}
+		a {
+			font-size: 20px;
+			color: white;
+		}
+		li {
+			font-size: 20px;
+		}
 	}
 	
 	#icons div {
