@@ -64,7 +64,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
 			<button class=\"btn\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"$iconSrc\" ></img><small>{$icon["label"]}</small>
+				<img src=\"$iconSrc\" ></img><br><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
@@ -78,18 +78,6 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		</div>
 	</div>
 </div>';
-		
-		// $footer_html = "
-		// <div id='pas_footer'>";
-		
-		// // add odd numbered footer links row
-		// foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
-				// $footer_html .= "
-			// <a href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a>";
-		// }
-		// $footer_html .= "
-		// </div>";
-		
 		
 		$footer_html = "
 		<div id='pasfooter'>

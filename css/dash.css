@@ -4,6 +4,9 @@ html, body, #pagecontainer {
   max-width: none;
   max-height: none;
 }
+html small, body small, #pagecontainer small {
+  color: white;
+}
 
 #container {
   display: flex;
