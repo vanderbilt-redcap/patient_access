@@ -30,8 +30,7 @@ html, body, #pagecontainer {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	
-	max-width: 35%;
+	max-width: 725px;
 	height: 100%;
 	margin-right: 24px;
 	
@@ -67,6 +66,7 @@ html, body, #pagecontainer {
 		
 		padding: 0;
 		margin: 0;
+		min-width: 725px;
 		
 		small {
 			margin-left: 8px;
