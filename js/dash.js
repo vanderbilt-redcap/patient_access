@@ -23,7 +23,7 @@ $(function() {
 		});
 		$("#iconLinks ul").html(html);
 		// change links div card title header
-		console.log($(this).find("small").text());
+		// console.log($(this).find("small").text());
 		$("#iconLinks h5").text($(this).find("small").text() + " Links");
 		
 		// add (or replace) icon in #iconLinks

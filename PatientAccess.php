@@ -54,6 +54,11 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// start building html string
 		$html = '
+<div id="menu" class="container-fluid">
+	<button class=\"btn\" type=\"button\">
+		<i class="fas fa-bars"></i>
+	</button>
+</div>
 <div id="dashboard">
 	<div id="icons" class="card">
 		<h3 class="card-title">' . $settings['dashboard_title']['value'] . '</h3>
@@ -111,8 +116,8 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		// $html = file_get_contents($this->getUrl("html/dashboard.html"));
 		
 		// inject some js to the survey page (e.g., http://localhost/redcap/surveys/?s=YAECPTMT8F) to clear container div and inject our own dashboard
-		$dashboardScript = file_get_contents($this->getUrl("js/dash.js"));
-		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash.css"), $dashboardScript);
+		$dashboardScript = file_get_contents($this->getUrl("js/dash2.js"));
+		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash2.css"), $dashboardScript);
 		$dashboardScript = str_replace("BOOTSTRAP_URL", $this->getUrl("js/bootstrap.min.js"), $dashboardScript);
 		$dashboardScript = str_replace("DASH_HTML", "`$html`", $dashboardScript);
 		$dashboardScript = str_replace("FOOTER_HTML", "`$footer_html`", $dashboardScript);

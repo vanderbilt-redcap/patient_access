@@ -1,32 +1,13 @@
-html, body, #pagecontainer {
-  height: 100%;
-  width: 100%;
-  max-width: none;
-  max-height: none;
-}
 html small, body small, #pagecontainer small {
   color: white;
 }
 
 #container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: auto auto;
-  height: 95%;
-  width: 90%;
   background-color: #333;
   border: none;
 }
 
 #dashboard {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 725px;
-  height: 100%;
-  margin-right: 24px;
   background-color: #333;
   border: none;
 }
@@ -49,13 +30,8 @@ html small, body small, #pagecontainer small {
   font-size: 20px;
 }
 #dashboard #icons div {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  min-width: 725px;
+  padding: 0px;
+  margin: 0px;
 }
 #dashboard #icons div small {
   margin-left: 8px;
@@ -73,11 +49,6 @@ button img {
   height: 96px;
 }
 
-#iconLinks div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
 #iconLinks div button {
   margin-right: 96px;
   height: 96px;
@@ -89,24 +60,12 @@ button img {
 }
 
 #pasfooter {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
   margin-right: 16px;
 }
 #pasfooter a {
   font-size: 16px;
   color: white;
   margin: 4px 8px;
-}
-
-#survey {
-  height: 90%;
-  width: 90%;
-}
-#survey iframe {
-  height: 100%;
-  width: 100%;
 }
 
 /*# sourceMappingURL=dash.css.map */
