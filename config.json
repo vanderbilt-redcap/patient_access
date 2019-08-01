@@ -51,7 +51,7 @@
 				{
 					"key": "icon_label",
 					"name": "Icon Label",
-					"required": false,
+					"required": true,
 					"type": "text"
 				},
 				{

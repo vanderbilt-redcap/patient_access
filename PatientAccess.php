@@ -54,7 +54,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// start building html string
 		$html = '
-<div id="menu" class="container-fluid">
+<div id="menu">
 	<button class=\"btn\" type=\"button\">
 		<i class="fas fa-bars"></i>
 	</button>
@@ -68,7 +68,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
-			<button class=\"btn\" data-icon-index=\"$i\" type=\"button\">
+			<button class=\"btn icon-button\" data-icon-index=\"$i\" type=\"button\">
 				<img src=\"$iconSrc\" ></img><br><small>{$icon["label"]}</small>
 			</button>";
 		}
