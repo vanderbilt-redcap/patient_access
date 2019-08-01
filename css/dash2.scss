@@ -1,0 +1,90 @@
+// recompile command (when working in css folder):
+//sass.bat base.scss base.css
+
+// @import "_normalize.scss";
+// @import "bootstrap/scss/bootstrap.scss";
+
+html, body, #pagecontainer {
+	small { color: white }
+}
+
+#container {
+	padding: 0;
+	background-color: #333;
+	border: none;
+}
+
+#menu {
+	background-color: #222222aa;
+	display: none;
+	button {
+		border: 1px solid white;
+		border-radius: 3px;
+	}
+	button > i {
+		color: white;
+	}
+}
+
+#dashboard {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	
+	background-color: #333;
+	border: none;
+	min-height: 90vh;
+	.card {
+		padding: 12px;
+		background-color: #333;
+	}
+	
+	h3, h5 {
+		text-align: center;
+		color: white;
+	}
+	
+	ul {
+		margin: 0px 12%;
+		a {
+			font-size: 20px;
+			color: white;
+		}
+		li {
+			font-size: 20px;
+		}
+	}
+	
+	#icons {
+	padding: 0;
+		div {
+			small {
+				margin-left: 8px;
+			}
+		}
+	}
+}
+		
+button {
+	// margin: 8px 8px;
+	// background-color: #3344BB;
+	background-color: #FFFFFF00;
+	border: 1px solid #000;
+}
+
+#pasfooter {
+	width: 100%;
+	margin-right: 16px;
+	a {
+		font-size: 16px;
+		color: white;
+		margin: 4px 8px;
+	}
+}
+
+#survey {
+	iframe {
+		min-height: 86vh;
+		width: 100%;
+	}
+}

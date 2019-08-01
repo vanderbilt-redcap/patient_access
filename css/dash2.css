@@ -1,0 +1,76 @@
+html small, body small, #pagecontainer small {
+  color: white;
+}
+
+#container {
+  padding: 0;
+  background-color: #333;
+  border: none;
+}
+
+#menu {
+  background-color: #222222aa;
+  display: none;
+}
+#menu button {
+  border: 1px solid white;
+  border-radius: 3px;
+}
+#menu button > i {
+  color: white;
+}
+
+#dashboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #333;
+  border: none;
+  min-height: 90vh;
+}
+#dashboard .card {
+  padding: 12px;
+  background-color: #333;
+}
+#dashboard h3, #dashboard h5 {
+  text-align: center;
+  color: white;
+}
+#dashboard ul {
+  margin: 0px 12%;
+}
+#dashboard ul a {
+  font-size: 20px;
+  color: white;
+}
+#dashboard ul li {
+  font-size: 20px;
+}
+#dashboard #icons {
+  padding: 0;
+}
+#dashboard #icons div small {
+  margin-left: 8px;
+}
+
+button {
+  background-color: #FFFFFF00;
+  border: 1px solid #000;
+}
+
+#pasfooter {
+  width: 100%;
+  margin-right: 16px;
+}
+#pasfooter a {
+  font-size: 16px;
+  color: white;
+  margin: 4px 8px;
+}
+
+#survey iframe {
+  min-height: 86vh;
+  width: 100%;
+}
+
+/*# sourceMappingURL=dash2.css.map */
