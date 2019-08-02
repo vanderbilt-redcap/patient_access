@@ -76,6 +76,7 @@ html, body, #pagecontainer {
 		}
 	}
 	
+	
 	#icons div {
 		display: flex;
 		flex-direction: row;
@@ -83,7 +84,7 @@ html, body, #pagecontainer {
 		justify-content: center;
 		
 		padding: 0;
-		margin: 0;
+		margin: 0px 0px 16px 0px;
 	}
 	
 	.icon-button {
@@ -108,8 +109,10 @@ html, body, #pagecontainer {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
+			width: 100%;
 			ul {
 				margin-bottom: 8px;
+				width: 100%;
 			}
 		}
 	}

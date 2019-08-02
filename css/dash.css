@@ -69,7 +69,7 @@ html small, body small, #pagecontainer small {
   flex-wrap: wrap;
   justify-content: center;
   padding: 0;
-  margin: 0;
+  margin: 0px 0px 16px 0px;
 }
 #dashboard .icon-button {
   width: 30%;
@@ -92,9 +92,11 @@ html small, body small, #pagecontainer small {
   display: flex;
   flex-direction: row;
   align-items: center;
+  width: 100%;
 }
 #dashboard #iconLinks div ul {
   margin-bottom: 8px;
+  width: 100%;
 }
 
 button {
