@@ -1,7 +1,7 @@
 <?php
-namespace Vanderbilt\PatientAccess;
+namespace Vanderbilt\PatientAccessSplit;
 
-class PatientAccess extends \ExternalModules\AbstractExternalModule {
+class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 	function redcap_survey_page($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $survey_hash, $response_id = NULL, $repeat_instance = 1) {
 		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", "beginning log...\n");
 		

@@ -1,7 +1,7 @@
 {
-	"name": "Patient Access",
+	"name": "Patient Access (Split)",
 	
-	"namespace": "Vanderbilt\\PatientAccess",
+	"namespace": "Vanderbilt\\PatientAccessSplit",
 	
 	"description": "External module for PAS Patient Access dashboard and surveys",
 	
