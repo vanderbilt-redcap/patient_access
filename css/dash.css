@@ -54,8 +54,11 @@ html small, body small, #pagecontainer small {
   flex-wrap: wrap;
   justify-content: center;
   padding: 0;
-  margin: 0;
+  margin-bottom: 24px;
   min-width: 725px;
+}
+#dashboard #icons div button {
+  margin-bottom: 36px;
 }
 #dashboard #icons div small {
   margin-left: 8px;
@@ -77,6 +80,7 @@ button img {
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding-bottom: 36px;
 }
 #iconLinks div button {
   margin-right: 96px;
@@ -86,6 +90,11 @@ button img {
 #iconLinks div button img {
   width: 72px;
   height: 72px;
+}
+#iconLinks div button small {
+  display: inline;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 #pasfooter {

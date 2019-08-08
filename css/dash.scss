@@ -65,8 +65,12 @@ html, body, #pagecontainer {
 		justify-content: center;
 		
 		padding: 0;
-		margin: 0;
+		margin-bottom: 24px;
 		min-width: 725px;
+		
+		button {
+			margin-bottom: 36px;
+		}
 		
 		small {
 			margin-left: 8px;
@@ -92,6 +96,7 @@ button {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		padding-bottom: 36px;
 		button {
 			margin-right: 96px;
 			img {
@@ -100,6 +105,11 @@ button {
 			}
 			height: 96px;
 			width: 96px;
+			small {
+				display: inline;
+				overflow-wrap: normal;
+				word-break: normal;
+			}
 		}
 	}
 }
