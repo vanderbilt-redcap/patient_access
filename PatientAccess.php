@@ -68,7 +68,7 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			</button>";
 		}
 		$html .= '
-			<div id="iconLinks">
+			<br\><div id="iconLinks">
 				<ul>';
 		foreach ($iconLinks[0] as $i => $link) {
 			$label = $link['label'];
