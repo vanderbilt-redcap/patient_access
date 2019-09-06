@@ -75,6 +75,9 @@ html small, body small, #pagecontainer small {
   font-size: 20px;
   text-align: center;
 }
+#dashboard .icon-button {
+  width: 100%;
+}
 #dashboard .icon-button small {
   overflow: hidden;
 }
@@ -118,19 +121,11 @@ button {
 }
 
 @media (min-width: 768px) {
-  #dashboard .icon-button {
-    width: 25%;
-  }
-
   #container {
     margin: 0px 10%;
   }
 }
 @media (min-width: 992px) {
-  #dashboard .icon-button {
-    width: 20%;
-  }
-
   #container {
     margin: 0px 15%;
   }

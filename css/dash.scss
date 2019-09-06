@@ -105,6 +105,7 @@ html, body, #pagecontainer {
 			// max-width: 50%;
 			// min-width: 50%;
 		// }
+		width: 100%;
 		small {
 			overflow: hidden;
 			// text-align: center;
@@ -154,9 +155,9 @@ button {
 
 // large screen adjustments
 @media (min-width: 768px) {
-	#dashboard .icon-button {
-		width: 25%;
-	}
+	// #dashboard .icon-button {
+		// width: 25%;
+	// }
 	
 	#container {
 		margin: 0px 10%;
@@ -165,9 +166,9 @@ button {
 
 
 @media (min-width: 992px) {
-	#dashboard .icon-button {
-		width: 20%;
-	}
+	// #dashboard .icon-button {
+		// width: 20%;
+	// }
 	
 	#container {
 		margin: 0px 15%;
