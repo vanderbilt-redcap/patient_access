@@ -12,9 +12,17 @@ html, body, #pagecontainer {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	margin: 0px;
+	width: 100%;
+	max-width: none;
 }
 
 #container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	max-width: 100%;
 	padding: 0;
 	background-color: #333;
 	border: none;
@@ -136,9 +144,12 @@ button {
 }
 
 #survey {
+	width: 100%;
+	max-width: none;
 	iframe {
 		min-height: 86vh;
 		width: 100%;
+		max-width: none;
 	}
 }
 

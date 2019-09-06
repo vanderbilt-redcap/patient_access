@@ -54,11 +54,6 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 		
 		// start building html string
 		$html = '
-<div id="menu">
-	<button class=\"btn\" type=\"button\">
-		<i class="fas fa-bars"></i>
-	</button>
-</div>
 <div id="dashboard">
 	<div id="icons" class="card">
 		<h3 class="card-title">' . $settings['dashboard_title']['value'] . '</h3>
@@ -73,13 +68,18 @@ class PatientAccess extends \ExternalModules\AbstractExternalModule {
 			</button>";
 		}
 		$html .= '
-		</div>
-	</div>
-	<div id="iconLinks" class="card">
-		<h5 class="card-title">Links</h5>
-		<div>
-			<ul class="card-body">
-			</ul>
+			<div id="iconLinks">
+				<ul>';
+		foreach ($iconLinks[0] as $i => $link) {
+			$label = $link['label'];
+			$url = $link['url'];
+			$html .= "
+					<li><a href='javascript:PatientAccessModule.openLink(\"$url\")'>$label</li>";
+		}
+		
+		$html .= '
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>';

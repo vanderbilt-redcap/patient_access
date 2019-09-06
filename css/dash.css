@@ -6,9 +6,17 @@ html small, body small, #pagecontainer small {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0px;
+  width: 100%;
+  max-width: none;
 }
 
 #container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
   padding: 0;
   background-color: #333;
   border: none;
@@ -116,9 +124,14 @@ button {
   margin: 4px 8px;
 }
 
+#survey {
+  width: 100%;
+  max-width: none;
+}
 #survey iframe {
   min-height: 86vh;
   width: 100%;
+  max-width: none;
 }
 
 @media (min-width: 768px) {
