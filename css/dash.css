@@ -76,7 +76,10 @@ html small, body small, #pagecontainer small {
   text-align: center;
 }
 #dashboard .icon-button {
-  width: 100%;
+  max-width: 200px;
+}
+#dashboard .icon-button img {
+  max-width: 100%;
 }
 #dashboard .icon-button small {
   overflow: hidden;

@@ -100,12 +100,10 @@ html, body, #pagecontainer {
 	// }
 	
 	.icon-button {
-		// width: 30%;
-		// img {
-			// max-width: 50%;
-			// min-width: 50%;
-		// }
-		width: 100%;
+		max-width: 200px;
+		img {
+			max-width: 100%;
+		}
 		small {
 			overflow: hidden;
 			// text-align: center;
