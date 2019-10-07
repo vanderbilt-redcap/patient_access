@@ -3,16 +3,15 @@ namespace Vanderbilt\PatientAccessSplit;
 
 class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 	function redcap_survey_page($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $survey_hash, $response_id = NULL, $repeat_instance = 1) {
-		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", "beginning log...\n");
+		// file_put_contents("C:/vumc/log.txt", "beginning log...\n");
 		
 		// get settings so we can fetch icon and link info
 		$settings = $this->getProjectSettings();
-		
 		if ($settings["survey_hash"]["value"] != $survey_hash) {
 			// not the survey we want to override
 			return;
 		}
-		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
+		// file_put_contents("C:/vumc/log.txt", "SETTINGS:\n" . print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// build icons array so we can send 1 query to db for icon file paths
 		$icons = [];
@@ -126,5 +125,37 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		</script>
 EOF;
 		echo($js);
+	}
+	
+	function make_config_page($form_name) {
+		$settings = $this->getProjectSettings();
+		file_put_contents("C:/vumc/log.txt", print_r($settings, true));
+		
+		// add dashboard title input option
+		?>
+		<h6 class="mt-3">Dashboard Title</h6>
+		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
+		<h6 class='mt-3'>Icons</h6>
+		<div id='icons'>
+			<div class='icon-form'>
+				<div class='icon-upload'>
+					<div class='input-group'>
+						<div class='custom-file'>
+							<input type='file' class='custom-file-input' id='logo-input' aria-describedby='upload'>
+							<label class='custom-file-label text-truncate' for='logo-input'>Choose an icon</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<button id='save_changes' class='btn btn-outline-primary mt-3' type='button'>Save Changes</button>
+		<link rel="stylesheet" href="<?=$this->getUrl('css/config.css')?>"/>
+		<?php
+	}
+	
+	function save_config($form_name) {
+		echo json_encode([
+			"success" => true
+		]);
 	}
 }

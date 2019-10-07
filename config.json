@@ -13,6 +13,16 @@
 		}
 	],
 	
+	"links": {
+		"project": [
+			{
+				"name": "Dashboard Configuration",
+				"icon": "gear",
+				"url": "config.php"
+			}
+		]
+	},
+	
 	"permissions": [
 		"redcap_survey_page"
 	],
