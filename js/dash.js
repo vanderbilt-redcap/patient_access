@@ -1,3 +1,6 @@
+// include css and bootstrap
+$('head').append('<link rel="stylesheet" type="text/css" href="CSS_URL">');
+
 // load dashboard content
 $(function() {
 	// append bootstrap js to document

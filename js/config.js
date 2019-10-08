@@ -30,70 +30,23 @@ $('body').on('change', ".custom-file-input", function() {
 
 // new icon
 $("body").on('click', 'button.new-icon', function(i, e) {
-	var icons = $('#icons')
-	var index = $(icons).children().length + 1
-	// console.log('new icon index', index)
-	var newIconForm = "\
-			<div class='icon-form'>\
-				<button type='button' class='btn btn-outline-secondary smaller-text delete-icon'><i class='fas fa-trash-alt'></i> Delete Icon</button>\
-				<div class='icon-upload custom-file mt-2'>\
-					<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>\
-					<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an icon</label>\
-				</div>\
-				<label class='mt-1' for='icon-label-" + index + "'>Icon label</label>\
-				<input class='icon-label w-100' type='text' id='icon-label-" + index + "'/>\
-				<div class='link-buttons row mt-1'>\
-					<h6>Links</h6>\
-					<button type='button' class='btn btn-outline-secondary smaller-text new-link ml-3'><i class='fas fa-plus'></i> New Link</button>\
-				</div>\
-				<div class='links'>\
-				</div>\
-			</div>"
-	$(icons).append(newIconForm)
+	PatientAccessSplit.newIcon()
 })
 
 // delete icon
 $("body").on('click', 'button.delete-icon', function(i, e) {
-	$(this).closest('.icon-form').remove()
+	PatientAccessSplit.deleteIcon(this)
 })
 
 // LINKS
 // add link
 $("body").on('click', 'button.new-link', function(i, e) {
-	var iconForm = $(this).closest('div.icon-form')
-	var i = iconForm.index() + 1
-	var links = $(iconForm).find('div.links')
-	var j = $(links).children().length + 1
-	var newLinkForm = "\
-					<div class='link-form mt-1'>\
-						<div class='ml-2 row'>\
-							<span class='mt-1'>Link " + j + ":</span>\
-							<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
-						</div>\
-						<label class='ml-2' for='link-label-" + i + "-" + j + "'>Label</label>\
-						<input class='link-label ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
-						<label class='ml-2' for='link-url-" + i + "-" + j + "'>URL</label>\
-						<input class='link-url ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
-					</div>"
-	links.append(newLinkForm)
+	PatientAccessSplit.newLink(this)
 })
 
 // delete link
 $("body").on('click', 'button.delete-link', function(i, e) {
-	var links = $(this).closest('div.links')
-	var iconIndex = $(this).closest('div.icon-form').index()+1
-	$(this).closest('.link-form').remove()
-	
-	// renumber remaining links
-	$(links).find('.link-form').each(function(i, form) {
-		i++
-		// console.log('form', form)
-		$(form).find('span').html("Link " + i)
-		$(form).find('label:first').attr('for', "link-label-" + iconIndex + "-" + i)
-		$(form).find('input:first').attr('id', "link-label-" + iconIndex + "-" + i)
-		$(form).find('label:last').attr('for', "link-url-" + iconIndex + "-" + i)
-		$(form).find('input:last').attr('id', "link-url-" + iconIndex + "-" + i)
-	})
+	PatientAccessSplit.deleteLink(this)
 })
 
 // SAVE CHANGES
@@ -146,3 +99,72 @@ $("body").on('click', '#save_changes', function(i, e) {
 		}
 	});
 })
+
+// PatientAccessSplit icon/link functions
+PatientAccessSplit.newIcon = function() {
+	var icons = $('#icons')
+	var index = $(icons).children().length + 1
+	// console.log('new icon index', index)
+	var newIconForm = "\
+			<div class='icon-form'>\
+				<button type='button' class='btn btn-outline-secondary smaller-text delete-icon'><i class='fas fa-trash-alt'></i> Delete Icon</button>\
+				<div class='icon-upload custom-file mt-2'>\
+					<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>\
+					<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an icon</label>\
+				</div>\
+				<label class='mt-1' for='icon-label-" + index + "'>Icon label</label>\
+				<input class='icon-label w-100' type='text' id='icon-label-" + index + "'/>\
+				<div class='link-buttons row mt-1'>\
+					<h6>Links</h6>\
+					<button type='button' class='btn btn-outline-secondary smaller-text new-link ml-3'><i class='fas fa-plus'></i> New Link</button>\
+				</div>\
+				<div class='links'>\
+				</div>\
+			</div>"
+	$(icons).append(newIconForm)
+}
+PatientAccessSplit.deleteIcon = function(icon) {
+	$(icon).closest('.icon-form').remove()
+}
+PatientAccessSplit.newLink = function(link) {
+	var iconForm = $(link).closest('div.icon-form')
+	var i = iconForm.index() + 1
+	var links = $(iconForm).find('div.links')
+	var j = $(links).children().length + 1
+	var newLinkForm = "\
+					<div class='link-form mt-1'>\
+						<div class='ml-2 row'>\
+							<span class='mt-1'>Link " + j + ":</span>\
+							<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
+						</div>\
+						<label class='ml-2' for='link-label-" + i + "-" + j + "'>Label</label>\
+						<input class='link-label ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
+						<label class='ml-2' for='link-url-" + i + "-" + j + "'>URL</label>\
+						<input class='link-url ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
+					</div>"
+	links.append(newLinkForm)
+}
+PatientAccessSplit.deleteLink = function(link) {
+	var links = $(link).closest('div.links')
+	var iconIndex = $(link).closest('div.icon-form').index()+1
+	$(link).closest('.link-form').remove()
+	
+	// renumber remaining links
+	$(links).find('.link-form').each(function(i, form) {
+		i++
+		// console.log('form', form)
+		$(form).find('span').html("Link " + i)
+		$(form).find('label:first').attr('for', "link-label-" + iconIndex + "-" + i)
+		$(form).find('input:first').attr('id', "link-label-" + iconIndex + "-" + i)
+		$(form).find('label:last').attr('for', "link-url-" + iconIndex + "-" + i)
+		$(form).find('input:last').attr('id', "link-url-" + iconIndex + "-" + i)
+	})
+}
+
+// helper funcs
+PatientAccessSplit.htmlDecode = function(value) {
+	return $("<textarea/>").html(value).text();
+}
+PatientAccessSplit.htmlEncode = function(value) {
+	return $('<textarea/>').text(value).html();
+}

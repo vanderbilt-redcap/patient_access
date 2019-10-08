@@ -2,10 +2,11 @@
 
 if (!empty($_POST)) {
 	$data = json_decode($_POST['data'], true);
-	$action = filter_var($data['action'], FILTER_SANITIZE_STRING);
+	$data['action'] = filter_var($data['action'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+	$data['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 }
-if ($action == "get_config_page") {
-	echo $module->make_config_page($_POST['form_name']);
+if ($data['action'] == "get_config_page") {
+	echo $module->make_config_page($data['form_name']);
 } else {
 	require_once str_replace("temp" . DIRECTORY_SEPARATOR, "", APP_PATH_TEMP) . "redcap_connect.php";
 	require_once APP_PATH_DOCROOT . 'ProjectGeneral' . DIRECTORY_SEPARATOR. 'header.php';
