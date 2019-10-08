@@ -1,6 +1,9 @@
 <?php
 
-$action = $_POST["action"];
+if (!empty($_POST)) {
+	$data = json_decode($_POST['data'], true);
+	$action = filter_var($data['action'], FILTER_SANITIZE_STRING);
+}
 if ($action == "get_config_page") {
 	echo $module->make_config_page($_POST['form_name']);
 } elseif ($action == "save_changes") {

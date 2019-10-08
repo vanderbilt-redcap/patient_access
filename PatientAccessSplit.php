@@ -133,20 +133,11 @@ EOF;
 		
 		// add dashboard title input option
 		?>
-		<h6 class="mt-3">Dashboard Title</h6>
+		<h5 class="mt-3">Dashboard Title</h5>
 		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
-		<h6 class='mt-3'>Icons</h6>
-		<div id='icons'>
-			<div class='icon-form'>
-				<div class='icon-upload'>
-					<div class='input-group'>
-						<div class='custom-file'>
-							<input type='file' class='custom-file-input' id='logo-input' aria-describedby='upload'>
-							<label class='custom-file-label text-truncate' for='logo-input'>Choose an icon</label>
-						</div>
-					</div>
-				</div>
-			</div>
+		<h5 class='mt-3'>Icons</h5>
+		<button type='button' class='btn btn-outline-secondary small-text new-icon'><i class="fas fa-plus"></i> New Icon</button>
+		<div id='icons' class='mt-3'>
 		</div>
 		<button id='save_changes' class='btn btn-outline-primary mt-3' type='button'>Save Changes</button>
 		<link rel="stylesheet" href="<?=$this->getUrl('css/config.css')?>"/>
@@ -154,6 +145,22 @@ EOF;
 	}
 	
 	function save_config($form_name) {
+		global $data;
+		
+		// sanitize user input
+		$filtered = [];
+		$filtered['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+		$filtered['dashboard_title'] = filter_var($data['dashboard_title'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+		$filtered["icons"] = [];
+		
+		foreach($data["icons"] as $icon) {
+			
+		}
+		
+		if (empty($filtered['dashboard_title']) and empty($filtered['icons'])) {
+			// delete settings and send user feedback
+		}
+		
 		echo json_encode([
 			"success" => true
 		]);
