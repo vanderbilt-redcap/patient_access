@@ -6,8 +6,6 @@ if (!empty($_POST)) {
 }
 if ($action == "get_config_page") {
 	echo $module->make_config_page($_POST['form_name']);
-} elseif ($action == "save_changes") {
-	echo $module->save_config($_POST['form_name']);
 } else {
 	require_once str_replace("temp" . DIRECTORY_SEPARATOR, "", APP_PATH_TEMP) . "redcap_connect.php";
 	require_once APP_PATH_DOCROOT . 'ProjectGeneral' . DIRECTORY_SEPARATOR. 'header.php';

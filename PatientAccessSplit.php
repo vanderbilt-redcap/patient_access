@@ -129,7 +129,6 @@ EOF;
 	
 	function make_config_page($form_name) {
 		$settings = $this->getProjectSettings();
-		file_put_contents("C:/vumc/log.txt", print_r($settings, true));
 		
 		// add dashboard title input option
 		?>

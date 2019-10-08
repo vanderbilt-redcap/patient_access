@@ -107,17 +107,17 @@ $("body").on('click', '#save_changes', function(i, e) {
 		form_data.append("dashboard_title", $("#dashboard_title").val())
 	
 	// add icons and links
-	$("#icons .icon-form").each(function(i, iconForm) {
+	$("#icons .icon-form").each(function(j, iconForm) {
 		// add icon file itself
-		var input = $(iconForm).find('custom-file-input')
+		var input = $(iconForm).find('.custom-file-input')
 		if (input.prop('files') && input.prop('files')[0])
-			form_data.append('icon-' + i, input.prop('files')[0])
+			form_data.append('icon-' + (j+1), input.prop('files')[0])
 		
 		// add icon label
 		if ($(iconForm).find('.icon-label').val())
-			form_data.append('icon-label-' + i, $(iconForm).find('.icon-label').val())
+			form_data.append('icon-label-' + (j+1), $(iconForm).find('.icon-label').val())
 		
-		$(iconForm).find('.link-form').each(function(j, linkForm) {
+		$(iconForm).find('.link-form').each(function(k, linkForm) {
 			// label
 			if ($(linkForm).find('.link-label').val())
 				form_data.append($(linkForm).find('.link-label').attr('id'), $(linkForm).find('.link-label').val())
@@ -128,7 +128,7 @@ $("body").on('click', '#save_changes', function(i, e) {
 	})
 	
 	console.log('sending data:', form_data);
-	console.log('save config url', PatientAccessSplit.saveConfigUrl);
+	// console.log('save config url', PatientAccessSplit.saveConfigUrl);
 	
 	$.ajax({
 		url: PatientAccessSplit.saveConfigUrl,
@@ -138,8 +138,11 @@ $("body").on('click', '#save_changes', function(i, e) {
 		processData: false,
 		data: form_data,
 		type: 'POST',
+		fail: function(response){
+			simpleDialog(response.message)
+		},
 		success: function(response){
-			console.log(response)
+			simpleDialog(response.message)
 		}
 	});
 })
