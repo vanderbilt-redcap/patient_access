@@ -137,14 +137,24 @@ while (true) {
 		break;
 	} else {
 		$filtered["icons"][$i] = [];
-		$edoc_id = save_icon($_FILES["icon-$i"], $i);
-		if (!empty($edoc_id)) {
-			$filtered["icons"][$i]["edoc_id"] = $edoc_id;
+		
+		// handle keeping or overwriting icon file
+		if (empty($_FILES["icon-$i"])) {
+			// icon previously saved so keep edoc_id
+			$edoc_id = filter_var($data["icon-edoc-id-$i"], FILTER_SANITIZE_NUMBER_INT, FILTER_NULL_ON_FAILURE);
+			if (!empty($edoc_id))
+				$filtered['icons'][$i]['edoc_id'] = $edoc_id;
+		} else {
+			// overwrite with new icon and delete old icon file
+			$edoc_id = save_icon($_FILES["icon-$i"], $i);
+			if (!empty($edoc_id)) {
+				$filtered["icons"][$i]["edoc_id"] = $edoc_id;
+			}
 		}
+		
 		if (!empty($data["icon-label-$i"])) {
 			$filtered["icons"][$i]["label"] = filter_var($data["icon-label-$i"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 		}
-		$filtered["icons"][$i]["filename"] = filter_var($_FILES["icon-$i"]["name"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 		if (empty($filtered["icons"][$i])) {
 			// no valid data, so erase
 			unset($filtered["icons"][$i]);

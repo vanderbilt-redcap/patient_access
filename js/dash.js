@@ -1,6 +1,3 @@
-// include css and bootstrap
-$('head').append('<link rel="stylesheet" type="text/css" href="CSS_URL">');
-
 // load dashboard content
 $(function() {
 	// append bootstrap js to document
@@ -28,7 +25,7 @@ $(function() {
 			// PatientAccessModule.settings.icons[iconIndex].links.forEach(function(link) {
 			for (var linkIndex in PatientAccessModule.settings.icons[iconIndex].links) {
 				var link = PatientAccessModule.settings.icons[iconIndex].links[linkIndex]
-				console.log('link label, url', link.label, link.url)
+				// console.log('link label, url', link.label, link.url)
 				html += `
 						<li><a href="javascript:PatientAccessModule.openLink('${link.url}')">${link.label}</li>`;
 			};

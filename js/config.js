@@ -26,6 +26,7 @@ $(".form_picker_dd a").click(function(i, e) {
 $('body').on('change', ".custom-file-input", function() {
 	var fileName = $(this).val().split('\\').pop()
 	$(this).next('.custom-file-label').html(fileName)
+	$(this).parent().next('.preview').hide()
 });
 
 // new icon
@@ -63,11 +64,12 @@ $("body").on('click', '#save_changes', function(i, e) {
 	$("#icons .icon-form").each(function(j, iconForm) {
 		// add icon file itself
 		var input = $(iconForm).find('.custom-file-input')
+		
+		// save new icon
 		if (input.prop('files') && input.prop('files')[0]) {
 			form_data.append('icon-' + (j+1), input.prop('files')[0])
-			// var icon_filename = $(iconForm).find('.custom-file-label').val()
-			// form_data.append('icon-filename-' + (j+1), icon_filename)
-			// console.log('appended icon file name:', icon_filename)
+		} else if (PatientAccessSplit.settings && PatientAccessSplit.settings.icons && PatientAccessSplit.settings.icons[j+1] && PatientAccessSplit.settings.icons[j+1].edoc_id) {
+			form_data.append('icon-edoc-id-' + (j+1), PatientAccessSplit.settings.icons[j+1].edoc_id)
 		}
 		
 		// add icon label
@@ -116,6 +118,8 @@ PatientAccessSplit.newIcon = function() {
 					<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>\
 					<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an icon</label>\
 				</div>\
+				<div class='preview'>\
+				</div>\
 				<label class='mt-1' for='icon-label-" + index + "'>Icon label</label>\
 				<input class='icon-label w-100' type='text' id='icon-label-" + index + "'/>\
 				<div class='link-buttons row mt-1'>\
@@ -128,6 +132,10 @@ PatientAccessSplit.newIcon = function() {
 	$(icons).append(newIconForm)
 }
 PatientAccessSplit.deleteIcon = function(icon) {
+	var i = $(icon).closest('.icon-form').index() + 1
+	console.log(PatientAccessSplit.settings.icons)
+	PatientAccessSplit.settings.icons.splice(i, 1)
+	console.log(PatientAccessSplit.settings.icons)
 	$(icon).closest('.icon-form').remove()
 }
 PatientAccessSplit.newLink = function(link) {
