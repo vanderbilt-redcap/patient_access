@@ -42,19 +42,11 @@ $("body").on('click', 'button.new-icon', function(i, e) {
 				</div>\
 				<label class='mt-1' for='icon-label-" + index + "'>Icon label</label>\
 				<input class='w-100' type='text' id='icon-label-" + index + "'/>\
-				<h6 class='mt-2'>Links</h6>\
-				<div class='link-buttons row'>\
-					<button type='button' class='btn btn-outline-secondary smaller-text new-link'><i class='fas fa-plus'></i> New Link</button>\
-					<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3' disabled><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
+				<div class='link-buttons row mt-1'>\
+					<h6>Links</h6>\
+					<button type='button' class='btn btn-outline-secondary smaller-text new-link ml-3'><i class='fas fa-plus'></i> New Link</button>\
 				</div>\
 				<div class='links'>\
-					<div class='link-form'>\
-						<span class='mt-1'>Link 1:</span>\
-						<label class='ml-2' for='link-label-" + index + "-1'>Label</label>\
-						<input class='ml-2' type='text' id='link-label-" + index + "-1'/>\
-						<label class='ml-2' for='link-url-" + index + "-1'>URL</label>\
-						<input class='ml-2' type='text' id='link-url-" + index + "-1'/>\
-					</div>\
 				</div>\
 			</div>"
 	$(icons).append(newIconForm)
@@ -73,27 +65,38 @@ $("body").on('click', 'button.new-link', function(i, e) {
 	var links = $(iconForm).find('div.links')
 	var j = $(links).children().length + 1
 	var newLinkForm = "\
-					<div class='link-form'>\
-						<span class='mt-1'>Link " + j + ":</span>\
+					<div class='link-form mt-1'>\
+						<div class='ml-2 row'>\
+							<span class='mt-1'>Link " + j + ":</span>\
+							<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
+						</div>\
 						<label class='ml-2' for='link-label-" + i + "-" + j + "'>Label</label>\
 						<input class='ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
 						<label class='ml-2' for='link-url-" + i + "-" + j + "'>URL</label>\
 						<input class='ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
 					</div>"
 	links.append(newLinkForm)
-	$(this).next('button.delete-link').attr('disabled', false)
 })
 
 // delete link
 $("body").on('click', 'button.delete-link', function(i, e) {
-	var iconForm = $(this).closest('div.icon-form')
-	var i = iconForm.index() + 1
-	var links = $(iconForm).find('div.links')
-	$(links).children(':last').remove()
-	if ($(links).children().length <= 1)
-		$(this).attr('disabled', true)
+	var links = $(this).closest('div.links')
+	var iconIndex = $(this).closest('div.icon-form').index()+1
+	$(this).closest('.link-form').remove()
+	
+	// renumber remaining links
+	$(links).find('.link-form').each(function(i, form) {
+		i++
+		console.log('form', form)
+		$(form).find('span').html("Link " + i)
+		$(form).find('label:first').attr('for', "link-label-" + iconIndex + "-" + i)
+		$(form).find('input:first').attr('id', "link-label-" + iconIndex + "-" + i)
+		$(form).find('label:last').attr('for', "link-url-" + iconIndex + "-" + i)
+		$(form).find('input:last').attr('id', "link-url-" + iconIndex + "-" + i)
+	})
 })
 
+// SAVE CHANGES
 $("body").on('click', '#save_changes', function(i, e) {
 	// send to server to save on db
 	var data = {
@@ -101,6 +104,13 @@ $("body").on('click', '#save_changes', function(i, e) {
 		form_name: PatientAccessSplit.formName,
 		dashboard_title: $("#dashboard_title").val()
 	};
+	
+	// add icons and links
+	$("#icons .icon-form").each(function(i, iconForm) {
+		if (!data.icons)
+			data.icons = []
+		
+	})
 	
 	console.log('sending data:', data);
 	
