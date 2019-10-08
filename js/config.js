@@ -63,8 +63,12 @@ $("body").on('click', '#save_changes', function(i, e) {
 	$("#icons .icon-form").each(function(j, iconForm) {
 		// add icon file itself
 		var input = $(iconForm).find('.custom-file-input')
-		if (input.prop('files') && input.prop('files')[0])
+		if (input.prop('files') && input.prop('files')[0]) {
 			form_data.append('icon-' + (j+1), input.prop('files')[0])
+			// var icon_filename = $(iconForm).find('.custom-file-label').val()
+			// form_data.append('icon-filename-' + (j+1), icon_filename)
+			// console.log('appended icon file name:', icon_filename)
+		}
 		
 		// add icon label
 		if ($(iconForm).find('.icon-label').val())
@@ -80,7 +84,7 @@ $("body").on('click', '#save_changes', function(i, e) {
 		})
 	})
 	
-	console.log('sending data:', form_data);
+	// console.log('sending data:', form_data);
 	// console.log('save config url', PatientAccessSplit.saveConfigUrl);
 	
 	$.ajax({

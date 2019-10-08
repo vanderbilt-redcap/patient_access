@@ -144,6 +144,7 @@ while (true) {
 		if (!empty($data["icon-label-$i"])) {
 			$filtered["icons"][$i]["label"] = filter_var($data["icon-label-$i"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 		}
+		$filtered["icons"][$i]["filename"] = filter_var($_FILES["icon-$i"]["name"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 		if (empty($filtered["icons"][$i])) {
 			// no valid data, so erase
 			unset($filtered["icons"][$i]);

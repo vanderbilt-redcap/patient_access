@@ -15,7 +15,28 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		
 		// file_put_contents("C:/vumc/log.txt", "\$settings from redcapsurveypage :\n" . print_r($settings, true) . "\n");
 		
-		$this->add_icon_db_info();
+		// build icons array so we can send 1 query to db for icon file paths
+		$edoc_ids = [];
+		foreach ($settings["icons"] as $icon) {
+			if (!empty($icon['edoc_id'])) {
+				$edoc_ids[] = $icon['edoc_id'];
+			}
+		}
+		// file_put_contents("C:/vumc/log.txt", "\$edoc_ids: " . print_r($edoc_ids, true), FILE_APPEND);
+		
+		// query db for icon file paths on server
+		$edoc_ids = "(" . implode(", ", $edoc_ids) . ")";
+		$sql = "SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id in $edoc_ids";
+		$result = db_query($sql);
+		while ($row = db_fetch_assoc($result)) {
+			foreach ($settings["icons"] as $i => $icon) {
+				if ($icon["edoc_id"] == $row["doc_id"]) {
+					// file_put_contents("C:/vumc/log.txt", "icon $i\n", FILE_APPEND);
+					$settings["icons"][$i]["stored_name"] = $row["stored_name"];
+					$settings["icons"][$i]["mime_type"] = $row["mime_type"];
+				}
+			}
+		}
 		
 		// start building html string
 		$html = '
@@ -111,7 +132,6 @@ EOF;
 		$settings = $this->framework->getProjectSetting($form_name);
 		if (!empty($settings)){
 			$settings = json_decode($settings, true);
-			$this->add_icon_db_info();
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
@@ -120,41 +140,21 @@ EOF;
 				}
 				for (var i in PatientAccessSplit.settings.icons) {
 					var icon = PatientAccessSplit.settings.icons[i]
-					console.log('icon', icon)
+					PatientAccessSplit.newIcon()
+					var iconElement = $("#icons").children(":last")
+					$(iconElement).find('.custom-file-input').html(icon.filename)
+					$(iconElement).find('.custom-file-label').html(icon.filename)
+					$(iconElement).find('.icon-label').val(icon.label)
 					for (var j in icon.links) {
 						var link = icon.links[j]
-						console.log('link', link)
+						PatientAccessSplit.newLink(iconElement)
+						var linkElement = $(iconElement).find('.link-form:last')
+						$(linkElement).find('.link-label').val(link.label)
+						$(linkElement).find('.link-url').val(link.url)
 					}
 				}
 			</script>
 			<?php
-		}
-	}
-	
-	function add_icon_db_info() {
-		// add stored name and mime type to each icon in settings
-		
-		global $settings;
-		
-		// build icons array so we can send 1 query to db for icon file paths
-		$edoc_ids = [];
-		foreach ($settings["icons"] as $icon) {
-			if (!empty($icon['edoc_id'])) {
-				$edoc_ids[] = $icon['edoc_id'];
-			}
-		}
-		
-		// query db for icon file paths on server
-		$edoc_ids = "(" . implode(", ", $edoc_ids) . ")";
-		$sql = "SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id in $edoc_ids";
-		$result = db_query($sql);
-		while ($row = db_fetch_assoc($result)) {
-			foreach ($settings["icons"] as $i => $icon) {
-				if ($icon["edoc_id"] == $row["doc_id"]) {
-					$settings["icons"][$i]["stored_name"] = $row["stored_name"];
-					$settings["icons"][$i]["mime_type"] = $row["mime_type"];
-				}
-			}
 		}
 	}
 }
