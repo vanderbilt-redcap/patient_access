@@ -133,10 +133,9 @@ PatientAccessSplit.newIcon = function() {
 }
 PatientAccessSplit.deleteIcon = function(icon) {
 	var i = $(icon).closest('.icon-form').index() + 1
-	console.log(PatientAccessSplit.settings.icons)
 	PatientAccessSplit.settings.icons.splice(i, 1)
-	console.log(PatientAccessSplit.settings.icons)
 	$(icon).closest('.icon-form').remove()
+	PatientAccessSplit.renumberLinks()
 }
 PatientAccessSplit.newLink = function(link) {
 	var iconForm = $(link).closest('div.icon-form')
@@ -161,15 +160,20 @@ PatientAccessSplit.deleteLink = function(link) {
 	var iconIndex = $(link).closest('div.icon-form').index()+1
 	$(link).closest('.link-form').remove()
 	
-	// renumber remaining links
-	$(links).find('.link-form').each(function(i, form) {
+	PatientAccessSplit.renumberLinks()
+}
+
+PatientAccessSplit.renumberLinks = function() {
+	$(".icon-form").each(function(i, iconForm) {
 		i++
-		// console.log('form', form)
-		$(form).find('span').html("Link " + i)
-		$(form).find('label:first').attr('for', "link-label-" + iconIndex + "-" + i)
-		$(form).find('input:first').attr('id', "link-label-" + iconIndex + "-" + i)
-		$(form).find('label:last').attr('for', "link-url-" + iconIndex + "-" + i)
-		$(form).find('input:last').attr('id', "link-url-" + iconIndex + "-" + i)
+		$(iconForm).find(".link-form").each(function(j, linkForm) {
+			j++
+			$(linkForm).find('span').html("Link " + j)
+			$(linkForm).find('label:first').attr('for', "link-label-" + i + "-" + j)
+			$(linkForm).find('input:first').attr('id', "link-label-" + i + "-" + j)
+			$(linkForm).find('label:last').attr('for', "link-url-" + i + "-" + j)
+			$(linkForm).find('input:last').attr('id', "link-url-" + i + "-" + j)
+		})
 	})
 }
 

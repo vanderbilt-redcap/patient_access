@@ -118,6 +118,15 @@ EOF;
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
+				// convert object to array
+				if (PatientAccessSplit.settings.icons) {
+					var temp_icons_obj = PatientAccessSplit.settings.icons
+					PatientAccessSplit.settings.icons = []
+					for (var i in temp_icons_obj) {
+						PatientAccessSplit.settings.icons[i] = temp_icons_obj[i]
+					}
+					delete temp_icons_obj
+				}
 				if (PatientAccessSplit.settings.dashboard_title) {
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
 				}
