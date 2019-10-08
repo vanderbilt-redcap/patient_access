@@ -6,47 +6,32 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// file_put_contents("C:/vumc/log.txt", "beginning log...\n");
 		
 		// get settings so we can fetch icon and link info
-		$settings = $this->getProjectSettings();
-		if ($settings["survey_hash"]["value"] != $survey_hash) {
-			// not the survey we want to override
-			return;
+		$settings = $this->framework->getProjectSetting($instrument);
+		if (!empty($settings)) {
+			$settings = json_decode($settings, true);
+		} else {
+			return null;
 		}
-		// file_put_contents("C:/vumc/log.txt", "SETTINGS:\n" . print_r($settings, true) . "\n", FILE_APPEND);
+		
+		file_put_contents("C:/vumc/log.txt", "\$settings from redcapsurveypage :\n" . print_r($settings, true) . "\n");
 		
 		// build icons array so we can send 1 query to db for icon file paths
-		$icons = [];
-		$iconLinks = [];
-		$doc_ids = [];
-		foreach ($settings["icon_upload"]["value"] as $i => $doc_id) {
-			if (!empty($doc_id)) {
-				$icons[$i] = [
-					"doc_id" => $doc_id,
-					"label" => $settings["icon_label"]["value"][$i]
-				];
-				foreach ($settings["link_url"]["value"][$i] as $j => $url) {
-					if (isset($settings["link_label"]["value"][$i][$j])) {
-						if (!isset($iconLinks[$i]))
-							$iconLinks[$i] = [];
-						$iconLinks[$i][] = [
-							"label" => $settings["link_label"]["value"][$i][$j],
-							"url" => $url
-						];
-					}
-				}
-				$doc_ids[] = $doc_id;
+		$edoc_ids = [];
+		foreach ($settings["icons"] as $icon) {
+			if (!empty($icon['edoc_id'])) {
+				$edoc_ids[] = $icon['edoc_id'];
 			}
 		}
-		// file_put_contents("C:/xampp/htdocs/redcap/modules/patient_access_v0.1/log.txt", print_r($settings, true) . "\n", FILE_APPEND);
 		
 		// query db for icon file paths on server
-		$doc_ids = "(" . implode($doc_ids, ", ") . ")";
-		$sql = "SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id in $doc_ids";
+		$edoc_ids = "(" . implode(", ", $edoc_ids) . ")";
+		$sql = "SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id in $edoc_ids";
 		$result = db_query($sql);
 		while ($row = db_fetch_assoc($result)) {
-			foreach ($icons as $i => $iconArray) {
-				if ($iconArray["doc_id"] == $row["doc_id"]) {
-					$icons[$i]["stored_name"] = $row["stored_name"];
-					$icons[$i]["mime_type"] = $row["mime_type"];
+			foreach ($settings["icons"] as $i => $icon) {
+				if ($icon["edoc_id"] == $row["doc_id"]) {
+					$settings["icons"][$i]["stored_name"] = $row["stored_name"];
+					$settings["icons"][$i]["mime_type"] = $row["mime_type"];
 				}
 			}
 		}
@@ -55,10 +40,10 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		$html = '
 <div id="dashboard">
 	<div id="icons" class="card">
-		<h3 class="card-title">' . $settings['dashboard_title']['value'] . '</h3>
+		<h3 class="card-title">' . $settings['dashboard_title'] . '</h3>
 		<div class="card-body">';
 		
-		foreach ($icons as $i => $icon) {
+		foreach ($settings["icons"] as $i => $icon) {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
@@ -116,10 +101,13 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		$dashboardScript = str_replace("DASH_HTML", "`$html`", $dashboardScript);
 		$dashboardScript = str_replace("FOOTER_HTML", "`$footer_html`", $dashboardScript);
 		$linksTableJSON = json_encode($iconLinks);
+		$settings = json_encode($settings);
+		// file_put_contents("C:/vumc/log.txt", "\$settings:\n" . print_r($settings, true) . "\n", FILE_APPEND);
 		$js = <<< EOF
 		<script type="text/javascript">
 			PatientAccessModule = {
-				"iconLinks": JSON.parse(`$linksTableJSON`)
+				"iconLinks": JSON.parse(`$linksTableJSON`),
+				"settings": JSON.parse(`$settings`)
 			};
 			$dashboardScript
 		</script>

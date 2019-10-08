@@ -1,7 +1,7 @@
 <?php
-file_put_contents("C:/vumc/log.txt", "logging\n");
-file_put_contents("C:/vumc/log.txt", "\$_FILES:\n" . print_r($_FILES, true), FILE_APPEND);
-file_put_contents("C:/vumc/log.txt", "\$_POST:\n" . print_r($_POST, true), FILE_APPEND);
+// file_put_contents("C:/vumc/log.txt", "logging\n");
+// file_put_contents("C:/vumc/log.txt", "\$_FILES:\n" . print_r($_FILES, true), FILE_APPEND);
+// file_put_contents("C:/vumc/log.txt", "\$_POST:\n" . print_r($_POST, true), FILE_APPEND);
 
 require_once str_replace("temp" . DIRECTORY_SEPARATOR, "", APP_PATH_TEMP) . "redcap_connect.php";
 
@@ -88,7 +88,6 @@ function save_icon($file, $iconIndex) {
 	}
 	
 	if (!empty($errors)) {
-		file_put_contents("C:/vumc/log.txt", "errors saving icon\n", FILE_APPEND);
 		return;
 	} else {
 		// save file and return edoc_id
@@ -117,7 +116,7 @@ $filtered = [];
 $filtered['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 
 // retrieve any previously saved settings
-$settings = $module->getProjectSettings($filtered["form_name"]);
+$settings = $module->getProjectSetting($filtered["form_name"]);
 if (!empty($settings))
 	$settings = json_decode($settings, true);
 
@@ -132,16 +131,13 @@ if (empty($filtered['form_name'])) {
 $filtered['dashboard_title'] = filter_var($data['dashboard_title'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 $filtered["icons"] = [];
 
-file_put_contents("C:/vumc/log.txt", "iterating icons\n", FILE_APPEND);
 $i = 1;
 while (true) {
 	if (empty($_FILES["icon-$i"]) and empty($data["icon-label-$i"])) {
 		break;
 	} else {
 		$filtered["icons"][$i] = [];
-		file_put_contents("C:/vumc/log.txt", "saving icon\n", FILE_APPEND);
 		$edoc_id = save_icon($_FILES["icon-$i"], $i);
-		file_put_contents("C:/vumc/log.txt", "saved icon\n", FILE_APPEND);
 		if (!empty($edoc_id)) {
 			$filtered["icons"][$i]["edoc_id"] = $edoc_id;
 		}
@@ -188,7 +184,7 @@ while (true) {
 if (empty($filtered["icons"]))
 	unset($filtered["icons"]);
 
-file_put_contents("C:/vumc/log.txt", "\$filtered:\n" . print_r($filtered, true), FILE_APPEND);
+// file_put_contents("C:/vumc/log.txt", "\$filtered:\n" . print_r($filtered, true), FILE_APPEND);
 
 if (!empty($errors)) {
 	exit(json_encode([
@@ -197,16 +193,16 @@ if (!empty($errors)) {
 }
 
 if (empty($filtered["icons"]) and empty($filtered['dashboard_title'])) {
-	$module->framework->setProjectSettings($filtered['form_name'], NULL);
+	$module->framework->setProjectSetting($filtered['form_name'], NULL);
 	exit(json_encode([
 		"success" => true,
 		"message" => "Deleted module settings"
 	]));
 } else {
-	$module->framework->setProjectSettings($filtered['form_name'], json_encode($filtered));
+	$module->framework->setProjectSetting($filtered['form_name'], json_encode($filtered));
 }
+
 echo json_encode([
 	"success" => true,
 	"message" => "Module settings have been saved"
 ]);
-file_put_contents("C:/vumc/log.txt", "end of script", FILE_APPEND);

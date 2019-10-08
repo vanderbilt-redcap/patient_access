@@ -138,10 +138,10 @@ $("body").on('click', '#save_changes', function(i, e) {
 		processData: false,
 		data: form_data,
 		type: 'POST',
-		fail: function(response){
+		success: function(response){
 			simpleDialog(response.message)
 		},
-		success: function(response){
+		error: function(response){
 			simpleDialog(response.message)
 		}
 	});

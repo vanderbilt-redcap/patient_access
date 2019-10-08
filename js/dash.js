@@ -1,6 +1,3 @@
-// include css and bootstrap
-$('head').append('<link rel="stylesheet" type="text/css" href="CSS_URL">');
-
 // load dashboard content
 $(function() {
 	// append bootstrap js to document
@@ -20,14 +17,18 @@ $(function() {
 		} else {
 			let iconIndex = $(this).attr("data-icon-index");
 			let html = "";
-			if (!PatientAccessModule.iconLinks[iconIndex]) {
+			// if (!PatientAccessModule.iconLinks[iconIndex]) {
+			if (!PatientAccessModule.settings.icons[iconIndex].links) {
 				$("#iconLinks").hide();
-				return false;
+				return null;
 			}
-			PatientAccessModule.iconLinks[iconIndex].forEach(function(link) {
+			// PatientAccessModule.settings.icons[iconIndex].links.forEach(function(link) {
+			for (var linkIndex in PatientAccessModule.settings.icons[iconIndex].links) {
+				var link = PatientAccessModule.settings.icons[iconIndex].links[linkIndex]
+				console.log('link label, url', link.label, link.url)
 				html += `
 						<li><a href="javascript:PatientAccessModule.openLink('${link.url}')">${link.label}</li>`;
-			});
+			};
 			$("#iconLinks ul").html(html);
 			// change links div card title header
 			$("#iconLinks h5").text($(this).find("small").text() + " Links");
