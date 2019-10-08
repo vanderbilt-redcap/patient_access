@@ -49,7 +49,8 @@ if ($action == "get_config_page") {
 		</div>
 		<script>
 			PatientAccessSplit = {
-				configAjaxUrl: <?=json_encode($module->getUrl("config.php"))?>
+				configAjaxUrl: <?=json_encode($module->getUrl("config.php"))?>,
+				saveConfigUrl: <?=json_encode($module->getUrl("save_changes.php"))?>
 			}
 		</script>
 		<script type="text/javascript" src="<?=$module->getUrl("js/config.js")?>"></script>

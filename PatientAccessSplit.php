@@ -143,26 +143,4 @@ EOF;
 		<link rel="stylesheet" href="<?=$this->getUrl('css/config.css')?>"/>
 		<?php
 	}
-	
-	function save_config($form_name) {
-		global $data;
-		
-		// sanitize user input
-		$filtered = [];
-		$filtered['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-		$filtered['dashboard_title'] = filter_var($data['dashboard_title'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-		$filtered["icons"] = [];
-		
-		foreach($data["icons"] as $icon) {
-			
-		}
-		
-		if (empty($filtered['dashboard_title']) and empty($filtered['icons'])) {
-			// delete settings and send user feedback
-		}
-		
-		echo json_encode([
-			"success" => true
-		]);
-	}
 }

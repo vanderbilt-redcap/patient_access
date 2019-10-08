@@ -32,7 +32,7 @@ $('body').on('change', ".custom-file-input", function() {
 $("body").on('click', 'button.new-icon', function(i, e) {
 	var icons = $('#icons')
 	var index = $(icons).children().length + 1
-	console.log('new icon index', index)
+	// console.log('new icon index', index)
 	var newIconForm = "\
 			<div class='icon-form'>\
 				<button type='button' class='btn btn-outline-secondary smaller-text delete-icon'><i class='fas fa-trash-alt'></i> Delete Icon</button>\
@@ -41,7 +41,7 @@ $("body").on('click', 'button.new-icon', function(i, e) {
 					<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an icon</label>\
 				</div>\
 				<label class='mt-1' for='icon-label-" + index + "'>Icon label</label>\
-				<input class='w-100' type='text' id='icon-label-" + index + "'/>\
+				<input class='icon-label w-100' type='text' id='icon-label-" + index + "'/>\
 				<div class='link-buttons row mt-1'>\
 					<h6>Links</h6>\
 					<button type='button' class='btn btn-outline-secondary smaller-text new-link ml-3'><i class='fas fa-plus'></i> New Link</button>\
@@ -71,9 +71,9 @@ $("body").on('click', 'button.new-link', function(i, e) {
 							<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
 						</div>\
 						<label class='ml-2' for='link-label-" + i + "-" + j + "'>Label</label>\
-						<input class='ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
+						<input class='link-label ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
 						<label class='ml-2' for='link-url-" + i + "-" + j + "'>URL</label>\
-						<input class='ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
+						<input class='link-url ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
 					</div>"
 	links.append(newLinkForm)
 })
@@ -87,7 +87,7 @@ $("body").on('click', 'button.delete-link', function(i, e) {
 	// renumber remaining links
 	$(links).find('.link-form').each(function(i, form) {
 		i++
-		console.log('form', form)
+		// console.log('form', form)
 		$(form).find('span').html("Link " + i)
 		$(form).find('label:first').attr('for', "link-label-" + iconIndex + "-" + i)
 		$(form).find('input:first').attr('id', "link-label-" + iconIndex + "-" + i)
@@ -99,29 +99,46 @@ $("body").on('click', 'button.delete-link', function(i, e) {
 // SAVE CHANGES
 $("body").on('click', '#save_changes', function(i, e) {
 	// send to server to save on db
-	var data = {
-		action: "save_changes",
-		form_name: PatientAccessSplit.formName,
-		dashboard_title: $("#dashboard_title").val()
-	};
+	var form_data = new FormData()
+	form_data.append("form_name", PatientAccessSplit.formName)
+	
+	// set dashboard title if set in the config page
+	if ($("#dashboard_title").val())
+		form_data.append("dashboard_title", $("#dashboard_title").val())
 	
 	// add icons and links
 	$("#icons .icon-form").each(function(i, iconForm) {
-		if (!data.icons)
-			data.icons = []
+		// add icon file itself
+		var input = $(iconForm).find('custom-file-input')
+		if (input.prop('files') && input.prop('files')[0])
+			form_data.append('icon-' + i, input.prop('files')[0])
 		
+		// add icon label
+		if ($(iconForm).find('.icon-label').val())
+			form_data.append('icon-label-' + i, $(iconForm).find('.icon-label').val())
+		
+		$(iconForm).find('.link-form').each(function(j, linkForm) {
+			// label
+			if ($(linkForm).find('.link-label').val())
+				form_data.append($(linkForm).find('.link-label').attr('id'), $(linkForm).find('.link-label').val())
+			// url
+			if ($(linkForm).find('.link-url').val())
+				form_data.append($(linkForm).find('.link-url').attr('id'), $(linkForm).find('.link-url').val())
+		})
 	})
 	
-	console.log('sending data:', data);
+	console.log('sending data:', form_data);
+	console.log('save config url', PatientAccessSplit.saveConfigUrl);
 	
 	$.ajax({
-		method: "POST",
-		url: PatientAccessSplit.configAjaxUrl,
-		data: {
-			data: JSON.stringify(data)
-		},
-		dataType: "json",
-		always: function(response){
+		url: PatientAccessSplit.saveConfigUrl,
+		dataType: 'json',
+		cache: false,
+		contentType: false,
+		processData: false,
+		data: form_data,
+		type: 'POST',
+		success: function(response){
 			console.log(response)
 		}
 	});
