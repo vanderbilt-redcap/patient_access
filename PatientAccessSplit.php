@@ -95,7 +95,6 @@ EOF;
 	}
 	
 	function make_config_page($form_name) {
-		// add dashboard title input option
 		?>
 		<h5 class="mt-3">Dashboard Title</h5>
 		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
@@ -109,10 +108,14 @@ EOF;
 		$settings = $this->framework->getProjectSetting($form_name);
 		if (!empty($settings)){
 			$settings = json_decode($settings, true);
-			$this->add_icon_db_info($settings);
-			foreach ($settings['icons'] as $i => $icon) {
+			
+			// add icons to document to be later moved via config js
+			$rich_settings = $this->add_icon_db_info($settings);
+			foreach ($rich_settings['icons'] as $i => $icon) {
 				echo $this->get_icon_img($form_name, $i);
 			}
+			unset($rich_settings);
+			
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
@@ -148,7 +151,7 @@ EOF;
 		}
 	}
 	
-	function add_icon_db_info(&$settings) {
+	function add_icon_db_info($settings) {
 		// build icons array so we can send 1 query to db for icon file paths
 		$edoc_ids = [];
 		foreach ($settings["icons"] as $icon) {
@@ -171,6 +174,7 @@ EOF;
 				}
 			}
 		}
+		return $settings;
 	}
 	
 	function get_icon_img($form_name, $iconIndex) {

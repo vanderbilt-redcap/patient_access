@@ -89,27 +89,27 @@ $("body").on('click', '#save_changes', function(i, e) {
 	// console.log('sending data:', form_data);
 	// console.log('save config url', PatientAccessSplit.saveConfigUrl);
 	
-	$.ajax({
-		url: PatientAccessSplit.saveConfigUrl,
-		dataType: 'json',
-		cache: false,
-		contentType: false,
-		processData: false,
-		data: form_data,
-		type: 'POST',
-		success: function(response){
-			simpleDialog(response.message)
-		},
-		error: function(response){
-			simpleDialog(response.message)
-		}
-	});
+	// $.ajax({
+		// url: PatientAccessSplit.saveConfigUrl,
+		// dataType: 'json',
+		// cache: false,
+		// contentType: false,
+		// processData: false,
+		// data: form_data,
+		// type: 'POST',
+		// success: function(response){
+			// simpleDialog(response.message)
+		// },
+		// error: function(response){
+			// simpleDialog(response.message)
+		// }
+	// });
 })
 
 // PatientAccessSplit icon/link functions
 PatientAccessSplit.newIcon = function() {
 	var icons = $('#icons')
-	var index = $(icons).children().length + 1
+	var index = $(icons).children().length
 	// console.log('new icon index', index)
 	var newIconForm = "\
 			<div class='icon-form'>\
@@ -132,32 +132,28 @@ PatientAccessSplit.newIcon = function() {
 	$(icons).append(newIconForm)
 }
 PatientAccessSplit.deleteIcon = function(icon) {
-	var i = $(icon).closest('.icon-form').index() + 1
-	PatientAccessSplit.settings.icons.splice(i, 1)
 	$(icon).closest('.icon-form').remove()
 	PatientAccessSplit.renumberLinks()
 }
 PatientAccessSplit.newLink = function(link) {
 	var iconForm = $(link).closest('div.icon-form')
-	var i = iconForm.index() + 1
 	var links = $(iconForm).find('div.links')
-	var j = $(links).children().length + 1
 	var newLinkForm = "\
 					<div class='link-form mt-1'>\
 						<div class='ml-2 row'>\
-							<span class='mt-1'>Link " + j + ":</span>\
+							<span class='mt-1'></span>\
 							<button type='button' class='btn btn-outline-secondary smaller-text delete-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
 						</div>\
-						<label class='ml-2' for='link-label-" + i + "-" + j + "'>Label</label>\
-						<input class='link-label ml-2' type='text' id='link-label-" + i + "-" + j + "'/>\
-						<label class='ml-2' for='link-url-" + i + "-" + j + "'>URL</label>\
-						<input class='link-url ml-2' type='text' id='link-url-" + i + "-" + j + "'/>\
+						<label class='ml-2'>Label</label>\
+						<input class='link-label ml-2' type='text'/>\
+						<label class='ml-2'>URL</label>\
+						<input class='link-url ml-2' type='text'/>\
 					</div>"
 	links.append(newLinkForm)
+	PatientAccessSplit.renumberLinks()
 }
 PatientAccessSplit.deleteLink = function(link) {
 	var links = $(link).closest('div.links')
-	var iconIndex = $(link).closest('div.icon-form').index()+1
 	$(link).closest('.link-form').remove()
 	
 	PatientAccessSplit.renumberLinks()
@@ -165,10 +161,8 @@ PatientAccessSplit.deleteLink = function(link) {
 
 PatientAccessSplit.renumberLinks = function() {
 	$(".icon-form").each(function(i, iconForm) {
-		i++
 		$(iconForm).find(".link-form").each(function(j, linkForm) {
-			j++
-			$(linkForm).find('span').html("Link " + j)
+			$(linkForm).find('span').html("Link " + (j+1))
 			$(linkForm).find('label:first').attr('for', "link-label-" + i + "-" + j)
 			$(linkForm).find('input:first').attr('id', "link-label-" + i + "-" + j)
 			$(linkForm).find('label:last').attr('for', "link-url-" + i + "-" + j)
