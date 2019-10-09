@@ -1,6 +1,5 @@
 // survey instruments select dropdown
 $(".form_picker_dd a").click(function(i, e) {
-	// console.log("form name: " + $(this).attr("value"))
 	PatientAccessSplit.formName = $(this).attr("value")
 	var data = {
 		action: "get_config_page",
@@ -15,9 +14,8 @@ $(".form_picker_dd a").click(function(i, e) {
 		},
 		dataType: "html"
 	}).always(function(msg) {
-		// console.log('result', msg)
 		$("#form_assocs").html(msg)
-	});
+	})
 	$("#form_picker").text($(this).text())
 })
 
@@ -27,7 +25,7 @@ $('body').on('change', ".custom-file-input", function() {
 	var fileName = $(this).val().split('\\').pop()
 	$(this).next('.custom-file-label').html(fileName)
 	$(this).parent().next('.preview').hide()
-});
+})
 
 // new icon
 $("body").on('click', 'button.new-icon', function(i, e) {
@@ -52,65 +50,94 @@ $("body").on('click', 'button.delete-link', function(i, e) {
 
 // SAVE CHANGES
 $("body").on('click', '#save_changes', function(i, e) {
-	// send to server to save on db
-	var form_data = new FormData()
-	form_data.append("form_name", PatientAccessSplit.formName)
+	// SETTINGS holds everything except icon files that were attached by user
+	// FORM_DATA holds all icon image files that were attached by user
+	// form_data.settings will hold the encoded json string containing settings values
 	
-	// set dashboard title if set in the config page
+	//
+	var files_attached = 0
+	//
+	
+	var settings = {}
+	var form_data = new FormData()
+	
+	settings.form_name = PatientAccessSplit.formName
 	if ($("#dashboard_title").val())
-		form_data.append("dashboard_title", $("#dashboard_title").val())
+		settings.dashboard_title = $("#dashboard_title").val()
 	
 	// add icons and links
+	settings.icons = []
 	$("#icons .icon-form").each(function(j, iconForm) {
-		// add icon file itself
-		var input = $(iconForm).find('.custom-file-input')
+		settings.icons.push({})
+		var icon = settings.icons[settings.icons.length-1]
 		
-		// save new icon
-		if (input.prop('files') && input.prop('files')[0]) {
-			form_data.append('icon-' + (j+1), input.prop('files')[0])
-		} else if (PatientAccessSplit.settings && PatientAccessSplit.settings.icons && PatientAccessSplit.settings.icons[j+1] && PatientAccessSplit.settings.icons[j+1].edoc_id) {
-			form_data.append('icon-edoc-id-' + (j+1), PatientAccessSplit.settings.icons[j+1].edoc_id)
+		var file_attached = false
+		// attach new icon file to form_data OR put edoc_id in settings
+		var input = $(iconForm).find('.custom-file-input')
+		if (input && input.prop('files') && input.prop('files')[0]) {
+			file_attached = true
+			form_data.append('icon-' + (j), input.prop('files')[0])
+		} else if ($(iconForm).attr('edoc_id')) {
+			icon.edoc_id = $(iconForm).attr('edoc_id')
 		}
 		
 		// add icon label
 		if ($(iconForm).find('.icon-label').val())
-			form_data.append('icon-label-' + (j+1), $(iconForm).find('.icon-label').val())
+			icon.label = $(iconForm).find('.icon-label').val()
 		
+		// add links
+		icon.links = []
 		$(iconForm).find('.link-form').each(function(k, linkForm) {
+			icon.links.push({})
+			var link = icon.links[icon.links.length-1]
+			
 			// label
 			if ($(linkForm).find('.link-label').val())
-				form_data.append($(linkForm).find('.link-label').attr('id'), $(linkForm).find('.link-label').val())
+				link.label = $(linkForm).find('.link-label').val()
 			// url
 			if ($(linkForm).find('.link-url').val())
-				form_data.append($(linkForm).find('.link-url').attr('id'), $(linkForm).find('.link-url').val())
+				link.url = $(linkForm).find('.link-url').val()
+			
+			if ($.isEmptyObject(link))
+				icon.links.pop()
 		})
+		if (icon.links.length == 0) 
+			delete icon.links
+		
+		if (!file_attached && !icon.label && !icon.edoc_id && $.isEmptyObject(icon))
+			settings.icons.pop()		// effectively ignore this icon
+		
+		//
+		if (file_attached)
+			files_attached++
+		//
 	})
+	if (settings.icons.length == 0)
+		delete settings.icons
 	
-	// console.log('sending data:', form_data);
-	// console.log('save config url', PatientAccessSplit.saveConfigUrl);
+	form_data.append('settings', JSON.stringify(settings))
 	
-	// $.ajax({
-		// url: PatientAccessSplit.saveConfigUrl,
-		// dataType: 'json',
-		// cache: false,
-		// contentType: false,
-		// processData: false,
-		// data: form_data,
-		// type: 'POST',
-		// success: function(response){
-			// simpleDialog(response.message)
-		// },
-		// error: function(response){
-			// simpleDialog(response.message)
-		// }
-	// });
+	$.ajax({
+		url: PatientAccessSplit.saveConfigUrl,
+		dataType: 'json',
+		cache: false,
+		contentType: false,
+		processData: false,
+		data: form_data,
+		type: 'POST',
+		success: function(response){
+			simpleDialog(response.message)
+		},
+		error: function(response){
+			simpleDialog(response.message)
+		}
+	})
 })
 
 // PatientAccessSplit icon/link functions
 PatientAccessSplit.newIcon = function() {
 	var icons = $('#icons')
 	var index = $(icons).children().length
-	// console.log('new icon index', index)
 	var newIconForm = "\
 			<div class='icon-form'>\
 				<button type='button' class='btn btn-outline-secondary smaller-text delete-icon'><i class='fas fa-trash-alt'></i> Delete Icon</button>\
@@ -173,8 +200,8 @@ PatientAccessSplit.renumberLinks = function() {
 
 // helper funcs
 PatientAccessSplit.htmlDecode = function(value) {
-	return $("<textarea/>").html(value).text();
+	return $("<textarea/>").html(value).text()
 }
 PatientAccessSplit.htmlEncode = function(value) {
-	return $('<textarea/>').text(value).html();
+	return $('<textarea/>').text(value).html()
 }

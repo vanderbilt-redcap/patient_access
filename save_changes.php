@@ -1,8 +1,4 @@
 <?php
-// file_put_contents("C:/vumc/log.txt", "logging\n");
-// file_put_contents("C:/vumc/log.txt", "\$_FILES:\n" . print_r($_FILES, true), FILE_APPEND);
-// file_put_contents("C:/vumc/log.txt", "\$_POST:\n" . print_r($_POST, true), FILE_APPEND);
-
 require_once str_replace("temp" . DIRECTORY_SEPARATOR, "", APP_PATH_TEMP) . "redcap_connect.php";
 
 // define image uploading helper functions
@@ -194,8 +190,6 @@ while (true) {
 }
 if (empty($filtered["icons"]))
 	unset($filtered["icons"]);
-
-// file_put_contents("C:/vumc/log.txt", "\$filtered:\n" . print_r($filtered, true), FILE_APPEND);
 
 if (!empty($errors)) {
 	exit(json_encode([

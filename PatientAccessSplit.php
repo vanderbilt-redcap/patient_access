@@ -3,8 +3,6 @@ namespace Vanderbilt\PatientAccessSplit;
 
 class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 	function redcap_survey_page($project_id, $record = NULL, $instrument, $event_id, $group_id = NULL, $survey_hash, $response_id = NULL, $repeat_instance = 1) {
-		// file_put_contents("C:/vumc/log.txt", "beginning log...\n");
-		
 		// get settings so we can fetch icon and link info
 		$settings = $this->framework->getProjectSetting($instrument);
 		if (!empty($settings)) {
@@ -12,8 +10,6 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		} else {
 			return null;
 		}
-		
-		// file_put_contents("C:/vumc/log.txt", "\$settings from redcapsurveypage :\n" . print_r($settings, true) . "\n");
 		
 		$this->add_icon_db_info($settings);
 		
@@ -71,9 +67,6 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 			</table>
 		</div>";
 		
-		// // alternatively, for testing, use baked html shim
-		// $html = file_get_contents($this->getUrl("html/dashboard.html"));
-		
 		// inject some js to the survey page (e.g., http://localhost/redcap/surveys/?s=YAECPTMT8F) to clear container div and inject our own dashboard
 		$dashboardScript = file_get_contents($this->getUrl("js/dash.js"));
 		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash.css"), $dashboardScript);
@@ -81,7 +74,6 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		$dashboardScript = str_replace("FOOTER_HTML", "`$footer_html`", $dashboardScript);
 		$linksTableJSON = json_encode($iconLinks);
 		$settings = json_encode($settings);
-		// file_put_contents("C:/vumc/log.txt", "\$settings:\n" . print_r($settings, true) . "\n", FILE_APPEND);
 		$js = <<< EOF
 		<script type="text/javascript">
 			PatientAccessModule = {
@@ -174,7 +166,6 @@ EOF;
 				$edoc_ids[] = $icon['edoc_id'];
 			}
 		}
-		// file_put_contents("C:/vumc/log.txt", "\$edoc_ids: " . print_r($edoc_ids, true), FILE_APPEND);
 		
 		// query db for icon file paths on server
 		$edoc_ids = "(" . implode(", ", $edoc_ids) . ")";
@@ -183,7 +174,6 @@ EOF;
 		while ($row = db_fetch_assoc($result)) {
 			foreach ($settings["icons"] as $i => $icon) {
 				if ($icon["edoc_id"] == $row["doc_id"]) {
-					// file_put_contents("C:/vumc/log.txt", "icon $i\n", FILE_APPEND);
 					$settings["icons"][$i]["stored_name"] = $row["stored_name"];
 					$settings["icons"][$i]["mime_type"] = $row["mime_type"];
 				}
