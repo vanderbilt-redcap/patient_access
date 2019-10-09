@@ -55,30 +55,29 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// start building html string
 		$html = '
 <div id="dashboard">
-	<div id="icons" class="card">
-		<h3 class="card-title">' . $settings['dashboard_title']['value'] . '</h3>
-		<div class="card-body">';
+	<h2 class="title mt-2 mb-2">' . $settings['dashboard_title']['value'] . '</h2>
+	<div id="icons">';
 		
 		foreach ($icons as $i => $icon) {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
-			<button class=\"btn\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"$iconSrc\" ></img><br><small>{$icon["label"]}</small>
+			<button class='btn icon-button' data-icon-index='$i' type='button'>
+				<img class='icon' src=\"$iconSrc\" ></img><br><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
-		</div>
 	</div>
-	<div id="iconLinks" class="card">
-		<h5 class="card-title">Links</h5>
+	<div id="iconLinks">
+		<h5>Links</h5>
 		<div>
-			<ul class="card-body">
+			<ul>
 			</ul>
 		</div>
 	</div>
 </div>';
 		
+		// table used to ensure odd/even numbering of footer links
 		$footer_html = "
 		<div id='pasfooter'>
 			<table>
@@ -88,7 +87,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 == 0) {
 				$footer_html .= "
-					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -99,7 +98,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 != 0) {
 				$footer_html .= "
-					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "

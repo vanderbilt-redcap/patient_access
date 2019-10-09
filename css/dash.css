@@ -1,121 +1,63 @@
-html, body, #pagecontainer {
-  height: 100%;
-  width: 100%;
-  max-width: none;
-  max-height: none;
-}
-html small, body small, #pagecontainer small {
-  color: white;
-}
-
 #container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  margin: auto auto;
-  height: 95%;
-  width: 90%;
-  background-color: #333;
-  border: none;
+	display: flex;
+	flex-direction: row;
+	background-color: #333;
+	border: none;
+	/* border: 1px solid white; */
 }
 
 #dashboard {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 725px;
-  height: 100%;
-  margin-right: 24px;
-  background-color: #333;
-  border: none;
-}
-#dashboard .card {
-  padding: 12px;
-  background-color: #333;
-}
-#dashboard h3, #dashboard h5 {
-  text-align: center;
-  color: white;
-}
-#dashboard ul {
-  margin: 0px 12%;
-}
-#dashboard ul a {
-  font-size: 20px;
-  color: white;
-}
-#dashboard ul li {
-  font-size: 20px;
-}
-#dashboard #icons div {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 0;
-  margin-bottom: 24px;
-  min-width: 725px;
-}
-#dashboard #icons div button {
-  margin-bottom: 36px;
-}
-#dashboard #icons div small {
-  margin-left: 8px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background-color: #333;
+	color: white;
+	/* border: 1px solid white; */
 }
 
-button {
-  margin: 8px 8px;
-  background-color: #FFFFFF00;
-  border: 1px solid #000;
-  width: 128px;
-  height: 128px;
-}
-button img {
-  width: 96px;
-  height: 96px;
+#icons {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	/* border: 1px solid white; */
 }
 
-#iconLinks div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-bottom: 36px;
+.icon-button {
+	padding: 8px;
+	border: none;
 }
-#iconLinks div button {
-  margin-right: 96px;
-  height: 96px;
-  width: 96px;
+
+.icon {
+	max-width: 100px;
+	max-height: 100px;
 }
-#iconLinks div button img {
-  width: 72px;
-  height: 72px;
-}
-#iconLinks div button small {
-  display: inline;
-  overflow-wrap: normal;
-  word-break: normal;
+
+#iconLinks {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }
 
 #pasfooter {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-right: 16px;
-}
-#pasfooter a {
-  font-size: 16px;
-  color: white;
-  margin: 4px 8px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	margin-right: 16px;
 }
 
-#survey {
-  height: 90%;
-  width: 90%;
-}
-#survey iframe {
-  height: 100%;
-  width: 100%;
+a {
+	font-size: 20px !important;
+	color: white !important;
 }
 
-/*# sourceMappingURL=dash.css.map */
+iframe {
+	height: 100%;
+}
+
+#footer {
+	margin-top: 0px;
+}
