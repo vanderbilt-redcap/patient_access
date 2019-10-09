@@ -119,15 +119,17 @@ EOF;
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
-				// convert object to array
-				if (PatientAccessSplit.settings.icons) {
-					var temp_icons_obj = PatientAccessSplit.settings.icons
-					PatientAccessSplit.settings.icons = []
-					for (var i in temp_icons_obj) {
-						PatientAccessSplit.settings.icons[i] = temp_icons_obj[i]
-					}
-					delete temp_icons_obj
-				}
+				
+				// // convert object to array // (not needed now thanks to 0-based everywhere)
+				// if (PatientAccessSplit.settings.icons) {
+					// var temp_icons_obj = PatientAccessSplit.settings.icons
+					// PatientAccessSplit.settings.icons = []
+					// for (var i in temp_icons_obj) {
+						// PatientAccessSplit.settings.icons[i] = temp_icons_obj[i]
+					// }
+					// delete temp_icons_obj
+				// }
+				
 				if (PatientAccessSplit.settings.dashboard_title) {
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
 				}
@@ -135,17 +137,30 @@ EOF;
 					var icon = PatientAccessSplit.settings.icons[i]
 					PatientAccessSplit.newIcon()
 					var iconElement = $("#icons").children(":last")
+					
+					// move preview img to this icon sub-form
 					$(iconElement).find('.preview').append($("#icon-preview-" + i).detach())
 					$("#icon-preview-" + i).show()
+					
+					// icon label
 					$(iconElement).find('.icon-label').val(icon.label)
+					
+					// icon edoc_id
+					if (icon.edoc_id)
+						$(iconElement).attr('data-icon-edoc-id', icon.edoc_id)
+					
 					for (var j in icon.links) {
 						var link = icon.links[j]
 						PatientAccessSplit.newLink(iconElement)
 						var linkElement = $(iconElement).find('.link-form:last')
+						
+						// link label and url
 						$(linkElement).find('.link-label').val(link.label)
 						$(linkElement).find('.link-url').val(link.url)
 					}
 				}
+				
+				// TODO: update footer links if able
 			</script>
 			<?php
 		}
@@ -185,7 +200,7 @@ EOF;
 			$path = EDOC_PATH . $settings['icons'][$iconIndex]['stored_name'];
 			$uri = base64_encode(file_get_contents($path));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
-			return "<img class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";
+			return "<img style='display: none' class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";
 		}
 	}
 }
