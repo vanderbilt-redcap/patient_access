@@ -54,7 +54,7 @@ PatientAccessModule.openLink = function(url) {
 	$("#survey").remove();
 	$("#pagecontainer").css('margin', '0px')
 	$("#pagecontainer").css('max-width', 'none')
-	$("#dashboard").css('max-width', '25%')
+	$("#dashboard").css('max-width', '20%')
 	$(".icon").css('max-width', '64px')
 	$(".icon").css('max-height', '64px')
 	$("#container").append(`
