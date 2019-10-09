@@ -20,30 +20,29 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// start building html string
 		$html = '
 <div id="dashboard">
-	<div id="icons" class="card">
-		<h3 class="card-title">' . $settings['dashboard_title'] . '</h3>
-		<div class="card-body">';
+	<h2 class="title mt-2 mb-2">' . $settings['dashboard_title'] . '</h2>
+	<div id="icons">';
 		
 		foreach ($settings["icons"] as $i => $icon) {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			$html .= "
-			<button class=\"btn\" data-icon-index=\"$i\" type=\"button\">
-				<img src=\"$iconSrc\" ></img><br><small>{$icon["label"]}</small>
+			<button class='btn icon-button' data-icon-index='$i' type='button'>
+				<img class='icon' src='$iconSrc' ></img><br><small>{$icon["label"]}</small>
 			</button>";
 		}
 		$html .= '
-		</div>
 	</div>
-	<div id="iconLinks" class="card">
-		<h5 class="card-title">Links</h5>
+	<div id="iconLinks">
+		<h5>Links</h5>
 		<div>
-			<ul class="card-body">
+			<ul>
 			</ul>
 		</div>
 	</div>
 </div>';
 		
+		// table used to ensure odd/even numbering of footer links
 		$footer_html = "
 		<div id='pasfooter'>
 			<table>
@@ -53,7 +52,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 == 0) {
 				$footer_html .= "
-					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -64,7 +63,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
 			if ($j % 2 != 0) {
 				$footer_html .= "
-					<td><a target=\"_blank\" rel=\"noopener noreferrer\" href=\"$footerLink\">{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -78,7 +77,6 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// inject some js to the survey page (e.g., http://localhost/redcap/surveys/?s=YAECPTMT8F) to clear container div and inject our own dashboard
 		$dashboardScript = file_get_contents($this->getUrl("js/dash.js"));
 		$dashboardScript = str_replace("CSS_URL", $this->getUrl("css/dash.css"), $dashboardScript);
-		$dashboardScript = str_replace("BOOTSTRAP_URL", $this->getUrl("js/bootstrap.min.js"), $dashboardScript);
 		$dashboardScript = str_replace("DASH_HTML", "`$html`", $dashboardScript);
 		$dashboardScript = str_replace("FOOTER_HTML", "`$footer_html`", $dashboardScript);
 		$linksTableJSON = json_encode($iconLinks);

@@ -1,61 +1,67 @@
+// include css and bootstrap
+$('head').append('<link rel="stylesheet" type="text/css" href="CSS_URL">')
+
 // load dashboard content
 $(function() {
-	// append bootstrap js to document
-	let s = document.createElement("script");
-    s.type = "text/javascript";
-    s.src = "BOOTSTRAP_URL";
-    $("head").append(s);
-	
 	// add dashboard html
-	$("#container").html(DASH_HTML);
-	$("#container").after(FOOTER_HTML);
-	$("#iconLinks").hide();
+	$("#container").html(DASH_HTML)
+	$("#container").after(FOOTER_HTML)
+	$("#iconLinks").hide()
 	
 	$("button").on("click", function() {
-		if ($("#iconLinks").css('display') !== 'none' && $(this).find("small").text() === $("#iconLinks button small").text()) {
-			$("#iconLinks").hide();
+		if ($("#iconLinks").css('display') !== 'none' && this == PatientAccessModule.lastClicked) {
+			$("#iconLinks").hide()
 		} else {
-			let iconIndex = $(this).attr("data-icon-index");
-			let html = "";
-			// if (!PatientAccessModule.iconLinks[iconIndex]) {
+			let iconIndex = $(this).attr("data-icon-index")
+			let html = ""
 			if (!PatientAccessModule.settings.icons[iconIndex].links) {
-				$("#iconLinks").hide();
-				return null;
+				$("#iconLinks").hide()
+				return
 			}
-			// PatientAccessModule.settings.icons[iconIndex].links.forEach(function(link) {
 			for (var linkIndex in PatientAccessModule.settings.icons[iconIndex].links) {
 				var link = PatientAccessModule.settings.icons[iconIndex].links[linkIndex]
-				// console.log('link label, url', link.label, link.url)
 				html += `
-						<li><a href="javascript:PatientAccessModule.openLink('${link.url}')">${link.label}</li>`;
-			};
-			$("#iconLinks ul").html(html);
+						<li><a href="javascript:PatientAccessModule.openLink('${link.url}')">${link.label}</li>`
+			}
+			$("#iconLinks ul").html(html)
 			// change links div card title header
-			$("#iconLinks h5").text($(this).find("small").text() + " Links");
+			$("#iconLinks h5").text($(this).find("small").text() + " Links")
 			
 			// add (or replace) icon in #iconLinks
-			$("#iconLinks div").find("button").remove();
-			$("#iconLinks div").append($(this).clone());
-			$("#iconLinks div").find("button img").css({
+			$("#iconLinks").find("button").remove()
+			$("#iconLinks").append($(this).clone())
+			$("#iconLinks").find("button img").css({
 				"height": 64,
 				"width": 64
-			});
+			})
 			
-			$("#iconLinks").show();
+			$("#iconLinks").show()
+			$([document.documentElement, document.body]).animate({
+				scrollTop: $("#iconLinks").offset().top
+			}, 200);
 		}
-	});
-});
+		PatientAccessModule.lastClicked = this
+	})
+})
 
 PatientAccessModule.openLink = function(url) {
-	$("#survey").remove();
+	$("#survey").remove()
 	$("#container").append(`
 	<div id="survey">
 		<iframe src="${url}"</iframe>
-	</div>`);
-	
+	</div>`)
+	$("#pagecontainer").css('margin', '0px')
+	$("#pagecontainer").css('max-width', 'none')
+	$("#dashboard").css('max-width', '20%')
+	$(".icon").css('max-width', '64px')
+	$(".icon").css('max-height', '64px')
+	$("#container").css('padding-top', '0px')
+	$("iframe").css('width', '100%')
+	$("#survey").css('width', '100%')
+	$(window).scrollTop(0)
 	// expand survey container to fill width
-	$('iframe').on('load', function() {
-		$('iframe').contents().find("head")
-			.append("<style type='text/css'>  #pagecontainer{max-width: none;}  </style>");
-	});
+	// $('iframe').on('load', function() {
+		// $('iframe').contents().find("head")
+			// .append("<style type='text/css'>  #pagecontainer{max-width: none}  </style>")
+	// })
 }
