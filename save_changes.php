@@ -105,6 +105,10 @@ function save_icon($file, $iconIndex) {
 }
 /////////////
 
+file_put_contents("C:/vumc/log.txt", print_r($_FILES, true));
+file_put_contents("C:/vumc/log.txt", print_r($_POST, true), FILE_APPEND);
+exit();
+
 // sanitize user input
 $data = $_POST;
 $errors = [];

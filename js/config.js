@@ -71,12 +71,13 @@ $("body").on('click', '#save_changes', function(i, e) {
 		settings.icons.push({})
 		var icon = settings.icons[settings.icons.length-1]
 		
-		var file_attached = false
 		// attach new icon file to form_data OR put edoc_id in settings
 		var input = $(iconForm).find('.custom-file-input')
+		var file_attached = false
 		if (input && input.prop('files') && input.prop('files')[0]) {
 			file_attached = true
 			form_data.append('icon-' + (j), input.prop('files')[0])
+			console.log('file appended to form_data for icon ' + j)
 		} else if ($(iconForm).attr('edoc_id')) {
 			icon.edoc_id = $(iconForm).attr('edoc_id')
 		}
@@ -106,11 +107,6 @@ $("body").on('click', '#save_changes', function(i, e) {
 		
 		if (!file_attached && !icon.label && !icon.edoc_id && $.isEmptyObject(icon))
 			settings.icons.pop()		// effectively ignore this icon
-		
-		//
-		if (file_attached)
-			files_attached++
-		//
 	})
 	if (settings.icons.length == 0)
 		delete settings.icons
