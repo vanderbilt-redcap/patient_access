@@ -101,10 +101,13 @@ EOF;
 		if (!empty($settings)){
 			$settings = json_decode($settings, true);
 			
+			_log("\$settings: \n" . print_r($settings, true));
 			// add icons to document to be later moved via config js
 			$rich_settings = $this->add_icon_db_info($settings);
+			_log("inital rich settings:\n" . print_r($rich_settings, true));
 			foreach ($rich_settings['icons'] as $i => $icon) {
-				echo $this->get_icon_img($form_name, $i);
+				if (isset($icon['edoc_id']))
+					echo $this->get_icon_img($rich_settings, $i);
 			}
 			unset($rich_settings);
 			
@@ -161,7 +164,8 @@ EOF;
 	function add_icon_db_info($settings) {
 		// build icons array so we can send 1 query to db for icon file paths
 		$edoc_ids = [];
-		foreach ($settings["icons"] as $icon) {
+		$settings = $settings;
+		foreach ($settings["icons"] as $i => $icon) {
 			if (!empty($icon['edoc_id'])) {
 				$edoc_ids[] = $icon['edoc_id'];
 			}
@@ -174,6 +178,7 @@ EOF;
 		while ($row = db_fetch_assoc($result)) {
 			foreach ($settings["icons"] as $i => $icon) {
 				if ($icon["edoc_id"] == $row["doc_id"]) {
+					_log("enriching icon setting $i: " . $row['stored_name']);
 					$settings["icons"][$i]["stored_name"] = $row["stored_name"];
 					$settings["icons"][$i]["mime_type"] = $row["mime_type"];
 				}
@@ -182,15 +187,21 @@ EOF;
 		return $settings;
 	}
 	
-	function get_icon_img($form_name, $iconIndex) {
-		$settings = $this->framework->getProjectSetting($form_name);
-		$settings = json_decode($settings, true);
+	function get_icon_img($settings, $iconIndex) {
+		_log("fetching img for icon: $iconIndex");
 		if (!empty($settings) and !empty($settings['icons']) and !empty($settings['icons'][$iconIndex])) {
-			$this->add_icon_db_info($settings);
 			$path = EDOC_PATH . $settings['icons'][$iconIndex]['stored_name'];
+			_log('icon path: ' . $path);
 			$uri = base64_encode(file_get_contents($path));
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			return "<img style='display: none' class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";
+		} else {
+			
 		}
 	}
+}
+
+file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+function _log($str) {
+	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
 }

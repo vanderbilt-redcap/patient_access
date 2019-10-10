@@ -76,7 +76,7 @@ $("body").on('click', '#save_changes', function(i, e) {
 		var file_attached = false
 		if (input && input.prop('files') && input.prop('files')[0]) {
 			file_attached = true
-			form_data.append('icon-' + (j), input.prop('files')[0])
+			form_data.append('icon-' + (settings.icons.length-1), input.prop('files')[0])
 			console.log('file appended to form_data for icon ' + j)
 		} else if ($(iconForm).attr('edoc_id')) {
 			icon.edoc_id = $(iconForm).attr('edoc_id')
@@ -122,10 +122,10 @@ $("body").on('click', '#save_changes', function(i, e) {
 		data: form_data,
 		type: 'POST',
 		success: function(response){
-			simpleDialog(response.message)
+			console.log(response.message)
 		},
 		error: function(response){
-			simpleDialog(response.message)
+			console.log(response.message)
 		}
 	})
 })

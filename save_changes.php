@@ -50,11 +50,12 @@ function file_upload_max_size() {
 function save_icon($file, $iconIndex) {
 // return saved icon's edoc_id
 // or collect $errors and return NULL
-	global $filtered;
-	global $errors;
-	global $settings;
 	global $module;
-	$form_name = $filtered["form_name"];
+	global $errors;
+	// global $settings;
+	global $old_settings;
+	global $new_settings;
+	
 	// check for transfer errors
 	if ($file["error"] !== 0) {
 		$errors[] = "There was a file transfer error for icon #$iconIndex.";
@@ -87,131 +88,110 @@ function save_icon($file, $iconIndex) {
 		return;
 	} else {
 		// save file and return edoc_id
-		
-		// but first delete old icon if exists
-		if (!empty($settings) and !empty($settings['icons']) and !empty($settings['icons'][$iconIndex])) {
-			$old_edoc_id = $settings['icons'][$iconIndex];
-			if (!empty($old_edoc_id)) {
-				$sql = "SELECT * FROM redcap_edocs_metadata WHERE doc_id=$old_edoc_id";
-				$result = db_query($sql);
-				while ($row = db_fetch_assoc($result)) {
-					unlink(EDOC_PATH . $row["stored_name"]);
-				}
-			}
-		}
 		$new_edoc_id = $module->framework->saveFile($file['tmp_name']);
 		return $new_edoc_id;
 	}
 }
+
+function delete_icon_file($edoc_id, $iconIndex) {
+	$sql = "SELECT * FROM redcap_edocs_metadata WHERE doc_id=$edoc_id";
+	$result = db_query($sql);
+	while ($row = db_fetch_assoc($result)) {
+		_log("deleting old icon for icon $iconIndex -- edoc_id: $edoc_id");
+		unlink(EDOC_PATH . $row["stored_name"]);
+	}
+}
+
+function sanitize(&$array) {
+	foreach ($array as $key => $val) {
+		if (gettype($val) === 'string') {
+			$array[$key] = filter_var($val, FILTER_SANITIZE_STRING);
+		} elseif (gettype($val) === 'integer') {
+			$array[$key] = intval($val);
+		} elseif (gettype($val) === 'array') {
+			sanitize($val);
+		} 
+	}
+}
+
+file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+function _log($str) {
+	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
+}
 /////////////
+/* strategy:
+	save icon files, deleting old edoc_ids as necessary, collecting new edoc_ids generated
+	save new settings
+	delete any old, unnecessary edocs
+*/
 
-file_put_contents("C:/vumc/log.txt", print_r($_FILES, true));
-file_put_contents("C:/vumc/log.txt", print_r($_POST, true), FILE_APPEND);
-exit();
+_log("\$_FILES: " . print_r($_FILES, true));
 
-// sanitize user input
-$data = $_POST;
-$errors = [];
-$filtered = [];
-$filtered['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
+if (isset($_POST['settings'])) {
+	$new_settings = $_POST['settings'];
+	$new_settings = json_decode($new_settings, true);
+	sanitize($new_settings);
+	_log("\$new_settings after sanitization: " . print_r($new_settings, true));
+} else {
+	$new_settings = [];
+}
 
-// retrieve any previously saved settings
-$settings = $module->getProjectSetting($filtered["form_name"]);
-if (!empty($settings))
-	$settings = json_decode($settings, true);
-
-if (empty($filtered['form_name'])) {
-	// send error feedback
-	echo(json_encode([
-		"message" => "Couldn't detect a form name. Please contact REDCap administrator with issues regarding the Patient Access (Split) module:<br>" . implode("<br>", $errors)
-	]));
+$form_name = $new_settings['form_name'];
+if (empty($form_name)) {
+	echo json_encode([
+		"message" => "The Patient Access Module couldn't determine the form name, please contact your REDCap administrator."
+	]);
 	return;
 }
 
-$filtered['dashboard_title'] = filter_var($data['dashboard_title'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-$filtered["icons"] = [];
+$old_settings = $module->framework->getProjectSetting($form_name);
+if (!empty($old_settings))
+	$old_settings = json_decode($old_settings, true);
 
-$i = 1;
-while (true) {
-	if (empty($_FILES["icon-$i"]) and empty($data["icon-label-$i"])) {
-		break;
-	} else {
-		$filtered["icons"][$i] = [];
-		
-		// handle keeping or overwriting icon file
-		if (empty($_FILES["icon-$i"])) {
-			// icon previously saved so keep edoc_id
-			$edoc_id = filter_var($data["icon-edoc-id-$i"], FILTER_SANITIZE_NUMBER_INT, FILTER_NULL_ON_FAILURE);
-			if (!empty($edoc_id))
-				$filtered['icons'][$i]['edoc_id'] = $edoc_id;
-		} else {
-			// overwrite with new icon and delete old icon file
-			$edoc_id = save_icon($_FILES["icon-$i"], $i);
-			if (!empty($edoc_id)) {
-				$filtered["icons"][$i]["edoc_id"] = $edoc_id;
-			}
-		}
-		
-		if (!empty($data["icon-label-$i"])) {
-			$filtered["icons"][$i]["label"] = filter_var($data["icon-label-$i"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-		}
-		if (empty($filtered["icons"][$i])) {
-			// no valid data, so erase
-			unset($filtered["icons"][$i]);
-			$i++;
-			continue;
-		}
-		
-		// iterate over links in icon
-		$filtered["icons"][$i]["links"] = [];
-		$j = 1;
-		while (true) {
-			if (empty($data["link-label-$i-$j"]) and empty($data["link-url-$i-$j"])) {
-				break;
-			} else {
-				$filtered["icons"][$i]["links"][$j] = [];
-				if (!empty($data["link-label-$i-$j"])) {
-					$filtered["icons"][$i]["links"][$j]['label'] = filter_var($data["link-label-$i-$j"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-				}
-				if (!empty($data["link-url-$i-$j"])) {
-					$filtered["icons"][$i]["links"][$j]['url'] = filter_var($data["link-url-$i-$j"], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
-				}
-				if (empty($filtered["icons"][$i]["links"][$j])) {
-					// invalid data
-					unset($filtered["icons"][$i]["links"][$j]);
-					$j++;
-					continue;
-				}
-			}
-			$j++;
-		}
-		if (empty($filtered["icons"][$i]["links"])) {
-			// no valid data, so erase
-			unset($filtered["icons"][$i]["links"]);
-		}
-		$i++;
+_log("\$old_settings: " . print_r($old_settings, true));
+
+$message = "Configuration settings have been saved.";
+$uploaded_edoc_ids = [];
+$iconIndex = 0;
+$keys = array_keys($_FILES);
+foreach ($keys as $key) {
+	_log("\$key: $key");
+	$iconIndex = intval(array_pop(explode("-", $key)));
+	$errors = [];
+	$edoc_id = save_icon($_FILES[$key], $iconIndex);
+	if (!empty($errors)) {
+		$message .= "<br>" . implode("<br", $errors);
+	} elseif (!empty($edoc_id)) {
+		$uploaded_edoc_ids[$iconIndex] = $edoc_id;
 	}
 }
-if (empty($filtered["icons"]))
-	unset($filtered["icons"]);
 
-if (!empty($errors)) {
-	exit(json_encode([
-		"message" => "The Patient Access (Split) module encountered errors:<br>" . implode("<br>", $errors)
-	]));
+// new icons have been saved, we have all uploaded_edoc_ids
+if (isset($new_settings['icons'])) {
+	foreach ($new_settings['icons'] as $index => $icon) {
+		if (!empty($uploaded_edoc_ids[$index])) {
+			$new_settings['icons'][$index]['edoc_id'] = $uploaded_edoc_ids[$index];
+		}
+	}
 }
 
-if (empty($filtered["icons"]) and empty($filtered['dashboard_title'])) {
-	$module->framework->setProjectSetting($filtered['form_name'], NULL);
-	exit(json_encode([
-		"success" => true,
-		"message" => "Deleted module settings"
-	]));
-} else {
-	$module->framework->setProjectSetting($filtered['form_name'], json_encode($filtered));
+// remove unnecessary icon files from server
+if (isset($old_settings['icons'])) {
+	foreach ($old_settings['icons'] as $index => $icon) {
+		$new_edoc_id = false;
+		if ($new_settings['icons'] and $new_settings['icons'][$index] and $new_settings['icons'][$index]['edoc_id'])
+			$new_edoc_id = $new_settings['icons'][$index]['edoc_id'];
+		if (!empty($icon['edoc_id']) and ($icon['edoc_id'] != $new_edoc_id)) {
+			delete_icon_file($icon['edoc_id'], $index);
+		}
+	}
 }
+
+_log("settings after adding uploaded_edoc_ids...\n" . print_r($new_settings, true));
+
+$module->framework->setProjectSetting($form_name, json_encode($new_settings));
 
 echo json_encode([
 	"success" => true,
-	"message" => "Module settings have been saved"
+	"message" => "$message"
 ]);

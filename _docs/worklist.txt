@@ -1,0 +1,20 @@
+get existing form working perfectly
+
+add option to supply footer links
+keep track of file uploads and don't allow more than 20 at once
+add preview when attach file to icon input element
+further tweak css/js
+
+ideas:
+
+
+file responsibilities:
+config.php + config.js + PatientAccessSplit methods:
+	1.) show user the current settings from module memory
+	2.) let user set new settings
+
+save_changes.php:
+	1.) remove all old settings (and delete unused icons)
+	2.) set new settings in module memory
+
+dash.js
