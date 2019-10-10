@@ -85,6 +85,7 @@ function save_icon($file, $iconIndex) {
 	}
 	
 	if (!empty($errors)) {
+		$errors[] = "Due to the error(s) above, the icon file for icon #$iconIndex wasn't saved in the settings. You can correct the errors and try to upload again.";
 		return;
 	} else {
 		// save file and return edoc_id
@@ -127,6 +128,7 @@ function _log($str) {
 
 _log("\$_FILES: " . print_r($_FILES, true));
 
+// sanitize new settings
 if (isset($_POST['settings'])) {
 	$new_settings = $_POST['settings'];
 	$new_settings = json_decode($new_settings, true);
@@ -144,18 +146,19 @@ if (empty($form_name)) {
 	return;
 }
 
+// fetch old settings
 $old_settings = $module->framework->getProjectSetting($form_name);
 if (!empty($old_settings))
 	$old_settings = json_decode($old_settings, true);
 
 _log("\$old_settings: " . print_r($old_settings, true));
 
+// save new icon files, collecting edoc_ids
 $message = "Configuration settings have been saved.";
 $uploaded_edoc_ids = [];
 $iconIndex = 0;
 $keys = array_keys($_FILES);
 foreach ($keys as $key) {
-	_log("\$key: $key");
 	$iconIndex = intval(array_pop(explode("-", $key)));
 	$errors = [];
 	$edoc_id = save_icon($_FILES[$key], $iconIndex);
@@ -166,22 +169,29 @@ foreach ($keys as $key) {
 	}
 }
 
-// new icons have been saved, we have all uploaded_edoc_ids
+// new icons have been saved, add edoc_ids to new settings that will be saved
+$all_new_edoc_ids = [];
 if (isset($new_settings['icons'])) {
 	foreach ($new_settings['icons'] as $index => $icon) {
 		if (!empty($uploaded_edoc_ids[$index])) {
-			$new_settings['icons'][$index]['edoc_id'] = $uploaded_edoc_ids[$index];
+			$new_settings['icons'][$index]['edoc_id'] = intval($uploaded_edoc_ids[$index]);
+		}
+		if (!empty($new_settings['icons'][$index]['edoc_id'])) {
+			$new_settings['icons'][$index]['edoc_id'] = intval($new_settings['icons'][$index]['edoc_id']);
+			$all_new_edoc_ids[] = intval($icon['edoc_id']);
 		}
 	}
 }
 
+_log("\$all_new_edoc_ids: \n" . print_r($all_new_edoc_ids, true));
+
 // remove unnecessary icon files from server
 if (isset($old_settings['icons'])) {
 	foreach ($old_settings['icons'] as $index => $icon) {
-		$new_edoc_id = false;
-		if ($new_settings['icons'] and $new_settings['icons'][$index] and $new_settings['icons'][$index]['edoc_id'])
-			$new_edoc_id = $new_settings['icons'][$index]['edoc_id'];
-		if (!empty($icon['edoc_id']) and ($icon['edoc_id'] != $new_edoc_id)) {
+		// if new settings don't include this edoc_id, then delete file
+		$id_needed = !(array_search(intval($icon['edoc_id']), $all_new_edoc_ids) === false);
+		_log("id needed for icon $index: " . json_encode($id_needed));
+		if (!empty($icon['edoc_id']) and !$id_needed) {
 			delete_icon_file($icon['edoc_id'], $index);
 		}
 	}

@@ -191,9 +191,11 @@ EOF;
 		_log("fetching img for icon: $iconIndex");
 		if (!empty($settings) and !empty($settings['icons']) and !empty($settings['icons'][$iconIndex])) {
 			$path = EDOC_PATH . $settings['icons'][$iconIndex]['stored_name'];
-			_log('icon path: ' . $path);
+			// _log('icon path: ' . $path);
 			$uri = base64_encode(file_get_contents($path));
+			// _log('icon uri: ' . $uri);
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
+			// _log('icon src: ' . $iconSrc);
 			return "<img style='display: none' class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";
 		} else {
 			

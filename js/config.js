@@ -22,9 +22,15 @@ $(".form_picker_dd a").click(function(i, e) {
 // ICONS
 // change label on uploaded file
 $('body').on('change', ".custom-file-input", function() {
+	var iconForm = $(this).closest('.icon-form')
 	var fileName = $(this).val().split('\\').pop()
 	$(this).next('.custom-file-label').html(fileName)
-	$(this).parent().next('.preview').hide()
+	var reader = new FileReader()
+	reader.onload = function (e) {
+		var imgElement = "<img class='icon-preview' id='icon-preview-" + $(iconForm).index() + "' src='" + e.target.result + "'/>"
+		$(iconForm).find('.preview').html(imgElement)
+	}
+	reader.readAsDataURL($(this).prop('files')[0])
 })
 
 // new icon
@@ -77,9 +83,9 @@ $("body").on('click', '#save_changes', function(i, e) {
 		if (input && input.prop('files') && input.prop('files')[0]) {
 			file_attached = true
 			form_data.append('icon-' + (settings.icons.length-1), input.prop('files')[0])
-			console.log('file appended to form_data for icon ' + j)
-		} else if ($(iconForm).attr('edoc_id')) {
-			icon.edoc_id = $(iconForm).attr('edoc_id')
+			// console.log('file appended to form_data for icon ' + j)
+		} else if ($(iconForm).attr('data-icon-edoc-id')) {
+			icon.edoc_id = $(iconForm).attr('data-icon-edoc-id')
 		}
 		
 		// add icon label
@@ -122,10 +128,10 @@ $("body").on('click', '#save_changes', function(i, e) {
 		data: form_data,
 		type: 'POST',
 		success: function(response){
-			console.log(response.message)
+			simpleDialog(response.message)
 		},
 		error: function(response){
-			console.log(response.message)
+			simpleDialog(response.message)
 		}
 	})
 })
