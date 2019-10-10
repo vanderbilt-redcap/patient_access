@@ -33,20 +33,6 @@
 	flex-direction: column;
 }
 
-#footer-links {
-	padding: 8px;
-	margin-right: 8px;
-	margin-bottom: 8px;
-	border: 1px solid #007adf;
-	max-width: 800px;
-	display: none;
-}
-
-.footer-link {
-	display: flex;
-	flex-direction: column;
-}
-
 .small-text {
 	font-size: 0.8rem;
 }

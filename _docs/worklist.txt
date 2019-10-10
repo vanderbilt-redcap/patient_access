@@ -1,6 +1,4 @@
-get existing form working perfectly
 
-add option to supply footer links
 keep track of file uploads and don't allow more than 20 at once
 further tweak css/js
 

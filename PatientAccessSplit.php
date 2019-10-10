@@ -11,7 +11,8 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 			return null;
 		}
 		
-		$this->add_icon_db_info($settings);
+		$settings = $this->add_icon_db_info($settings);
+		_log("\$settings: " . print_r($settings, true));
 		
 		// start building html string
 		$html = '
@@ -45,10 +46,14 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 				<tr>";
 		
 		// add odd numbered footer links row
-		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
-			if ($j % 2 == 0) {
+		foreach ($settings["footer_links"] as $j => $link) {
+			$label = $link['label'];
+			$url = $link['url'];
+			if (empty($label))
+				$label = $url;
+			if ($j % 2 == 0 && !empty($url)) {
 				$footer_html .= "
-					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$url'>$label</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -56,10 +61,14 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 				<tr>";
 		
 		// add even numbered footer links row
-		foreach ($settings["foot_link_url"]["value"] as $j => $footerLink) {
-			if ($j % 2 != 0) {
+		foreach ($settings["footer_links"] as $j => $link) {
+			$label = $link['label'];
+			$url = $link['url'];
+			if (empty($label))
+				$label = $url;
+			if ($j % 2 != 0 && !empty($url)) {
 				$footer_html .= "
-					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$footerLink'>{$settings["foot_link_label"]["value"][$j]}</a></td>";
+					<td><a class='footer' target='_blank' rel='noopener noreferrer' href='$url'>$label</a></td>";
 			}
 		}
 		$footer_html .= "
@@ -207,7 +216,7 @@ EOF;
 }
 
 // uncomment to log locally
-// file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+file_put_contents("C:/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	// file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
+	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
 }
