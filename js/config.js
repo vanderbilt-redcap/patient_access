@@ -26,12 +26,33 @@ $('body').on('change', ".custom-file-input", function() {
 	$(iconForm).attr('data-icon-edoc-id', null)
 	var fileName = $(this).val().split('\\').pop()
 	$(this).next('.custom-file-label').html(fileName)
-	var reader = new FileReader()
-	reader.onload = function (e) {
-		var imgElement = "<img class='icon-preview' id='icon-preview-" + $(iconForm).index() + "' src='" + e.target.result + "'/>"
-		$(iconForm).find('.preview').html(imgElement)
+	
+	var fileCount = $(this).prop('files').length
+	if (fileCount > 0) {
+		// throw warning if more than 20 files attached
+		var currentInput = this
+		var filesAttached = 0
+		$('.custom-file-input').each(function(i, input) {
+			if ($(input).prop('files')[0])
+				filesAttached ++
+			if (filesAttached > PatientAccessSplit.max_file_uploads) {
+				$(iconForm).find('.custom-file-label').html("Choose a icon")
+				simpleDialog("This instance of REDCap can only upload " + PatientAccessSplit.max_file_uploads + " files at a time. Please save changes and continue adding icons.")
+				return
+			}
+		})
+		
+		if (filesAttached <= PatientAccessSplit.max_file_uploads) {
+			var reader = new FileReader()
+			reader.onloadend = function (e) {
+				var imgElement = "<img class='icon-preview' id='icon-preview-" + $(iconForm).index() + "' src='" + e.target.result + "'/>"
+				$(iconForm).find('.preview').html(imgElement)
+			}
+			reader.readAsDataURL($(this).prop('files')[0])
+		}
+	} else {
+		$(this).closest('.icon-form').find('.preview img').remove()
 	}
-	reader.readAsDataURL($(this).prop('files')[0])
 })
 
 // new icon

@@ -130,6 +130,7 @@ EOF;
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
+				PatientAccessSplit.max_file_uploads = JSON.parse('<?=ini_get("max_file_uploads")?>')
 				if (PatientAccessSplit.settings.dashboard_title) {
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
 				}
@@ -216,7 +217,7 @@ EOF;
 }
 
 // uncomment to log locally
-file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+// file_put_contents("C:/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
+	// file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
 }
