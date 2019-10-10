@@ -55,6 +55,17 @@ $("body").on('click', 'button.delete-link', function(i, e) {
 	PatientAccessSplit.deleteLink(this)
 })
 
+// FOOTER LINKS
+// add link
+$("body").on('click', 'button.new-footer-link', function(i, e) {
+	PatientAccessSplit.newFooterLink(this)
+})
+
+// delete link
+$("body").on('click', 'button.delete-footer-link', function(i, e) {
+	PatientAccessSplit.deleteFooterLink(this)
+})
+
 // SAVE CHANGES
 $("body").on('click', '#save_changes', function(i, e) {
 	// SETTINGS holds everything except icon files that were attached by user
@@ -84,7 +95,6 @@ $("body").on('click', '#save_changes', function(i, e) {
 		if (input && input.prop('files') && input.prop('files')[0]) {
 			file_attached = true
 			form_data.append('icon-' + (settings.icons.length-1), input.prop('files')[0])
-			// console.log('file appended to form_data for icon ' + j)
 		} else if ($(iconForm).attr('data-icon-edoc-id')) {
 			icon.edoc_id = $(iconForm).attr('data-icon-edoc-id')
 		}
@@ -117,6 +127,21 @@ $("body").on('click', '#save_changes', function(i, e) {
 	})
 	if (settings.icons.length == 0)
 		delete settings.icons
+	
+	// add footer link data to settings
+	$(".footer-link").each(function(i, link) {
+		var label = $(link).find('.link-label').val()
+		var url = $(link).find('.link-url').val()
+		if (url || label) {
+			if (!settings.footer_links)
+				settings.footer_links = []
+			settings.footer_links.push({})
+			if (url)
+				settings.footer_links[settings.footer_links.length-1].url = url
+			if (label)
+				settings.footer_links[settings.footer_links.length-1].label = label
+		}
+	})
 	
 	form_data.append('settings', JSON.stringify(settings))
 	
@@ -183,12 +208,31 @@ PatientAccessSplit.newLink = function(link) {
 	PatientAccessSplit.renumberLinks()
 }
 PatientAccessSplit.deleteLink = function(link) {
-	var links = $(link).closest('div.links')
 	$(link).closest('.link-form').remove()
-	
 	PatientAccessSplit.renumberLinks()
 }
-
+PatientAccessSplit.newFooterLink = function() {
+	$("#footer-links").css('display', 'block')
+	$('#footer-links').append("\
+					<div class='footer-link mt-1'>\
+						<div class='ml-2 row'>\
+							<span class='mt-1'></span>\
+							<button type='button' class='btn btn-outline-secondary smaller-text delete-footer-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
+						</div>\
+						<label class='ml-2'>Label</label>\
+						<input class='link-label ml-2' type='text'/>\
+						<label class='ml-2'>URL</label>\
+						<input class='link-url ml-2' type='text'/>\
+					</div>")
+	PatientAccessSplit.renumberLinks()
+}
+PatientAccessSplit.deleteFooterLink = function(link) {
+	$(link).closest('.footer-link').remove()
+	if ($("#footer-links").children().length == 0) {
+		$("#footer-links").css('display', 'none')
+	}
+	PatientAccessSplit.renumberLinks()
+}
 PatientAccessSplit.renumberLinks = function() {
 	$(".icon-form").each(function(i, iconForm) {
 		$(iconForm).find(".link-form").each(function(j, linkForm) {
@@ -198,6 +242,9 @@ PatientAccessSplit.renumberLinks = function() {
 			$(linkForm).find('label:last').attr('for', "link-url-" + i + "-" + j)
 			$(linkForm).find('input:last').attr('id', "link-url-" + i + "-" + j)
 		})
+	})
+	$(".footer-link").each(function(i, link) {
+		$(link).find('span').html("Link " + (i+1))
 	})
 }
 

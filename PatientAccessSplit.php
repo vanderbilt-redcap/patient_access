@@ -90,10 +90,18 @@ EOF;
 		?>
 		<h5 class="mt-3">Dashboard Title</h5>
 		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
+		
 		<h5 class='mt-3'>Icons</h5>
 		<button type='button' class='btn btn-outline-secondary small-text new-icon'><i class="fas fa-plus"></i> New Icon</button>
 		<div id='icons' class='mt-3'>
 		</div>
+		
+		<h5 class='mt-3'>Footer Links</h5>
+		<button type='button' class='btn btn-outline-secondary small-text new-footer-link'><i class="fas fa-plus"></i> New Footer Link</button>
+		<div id='footer-links' class='mt-3'>
+		</div>
+		
+		<br>
 		<button id='save_changes' class='btn btn-outline-primary mt-3' type='button'>Save Changes</button>
 		<link rel="stylesheet" href="<?=$this->getUrl('css/config.css')?>"/>
 		<?php
@@ -143,7 +151,15 @@ EOF;
 					}
 				}
 				
-				// TODO: update footer links if able
+				for (var i in PatientAccessSplit.settings.footer_links) {
+					var link = PatientAccessSplit.settings.footer_links[i]
+					PatientAccessSplit.newFooterLink()
+					var linkElement = $("#footer-links").find('.footer-link:last')
+					
+					// link label and url
+					$(linkElement).find('.link-label').val(link.label)
+					$(linkElement).find('.link-url').val(link.url)
+				}
 			</script>
 			<?php
 		}
@@ -179,13 +195,10 @@ EOF;
 		_log("fetching img for icon: $iconIndex");
 		if (!empty($settings) and !empty($settings['icons']) and !empty($settings['icons'][$iconIndex])) {
 			$path = EDOC_PATH . $settings['icons'][$iconIndex]['stored_name'];
-			// _log('icon path: ' . $path);
 			$uri = base64_encode(file_get_contents($path));
-			// _log('icon uri: ' . $uri);
 			if (empty($uri))
 				return;
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
-			// _log('icon src: ' . $iconSrc);
 			return "<img style='display: none' class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";
 		} else {
 			
@@ -193,7 +206,8 @@ EOF;
 	}
 }
 
-file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+// uncomment to log locally
+// file_put_contents("C:/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
+	// file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
 }
