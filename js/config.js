@@ -23,6 +23,7 @@ $(".form_picker_dd a").click(function(i, e) {
 // change label on uploaded file
 $('body').on('change', ".custom-file-input", function() {
 	var iconForm = $(this).closest('.icon-form')
+	$(iconForm).attr('data-icon-edoc-id', null)
 	var fileName = $(this).val().split('\\').pop()
 	$(this).next('.custom-file-label').html(fileName)
 	var reader = new FileReader()

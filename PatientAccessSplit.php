@@ -101,7 +101,6 @@ EOF;
 		if (!empty($settings)){
 			$settings = json_decode($settings, true);
 			
-			_log("\$settings: \n" . print_r($settings, true));
 			// add icons to document to be later moved via config js
 			$rich_settings = $this->add_icon_db_info($settings);
 			_log("inital rich settings:\n" . print_r($rich_settings, true));
@@ -114,17 +113,6 @@ EOF;
 			?>
 			<script type='text/javascript'>
 				PatientAccessSplit.settings = JSON.parse('<?=json_encode($settings)?>')
-				
-				// // convert object to array // (not needed now thanks to 0-based everywhere)
-				// if (PatientAccessSplit.settings.icons) {
-					// var temp_icons_obj = PatientAccessSplit.settings.icons
-					// PatientAccessSplit.settings.icons = []
-					// for (var i in temp_icons_obj) {
-						// PatientAccessSplit.settings.icons[i] = temp_icons_obj[i]
-					// }
-					// delete temp_icons_obj
-				// }
-				
 				if (PatientAccessSplit.settings.dashboard_title) {
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
 				}
@@ -194,6 +182,8 @@ EOF;
 			// _log('icon path: ' . $path);
 			$uri = base64_encode(file_get_contents($path));
 			// _log('icon uri: ' . $uri);
+			if (empty($uri))
+				return;
 			$iconSrc = "data: {$icon["mime_type"]};base64,$uri";
 			// _log('icon src: ' . $iconSrc);
 			return "<img style='display: none' class='icon-preview' id='icon-preview-$iconIndex' src = '$iconSrc'>";

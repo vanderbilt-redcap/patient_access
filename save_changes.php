@@ -94,11 +94,10 @@ function save_icon($file, $iconIndex) {
 	}
 }
 
-function delete_icon_file($edoc_id, $iconIndex) {
+function delete_icon_file($edoc_id) {
 	$sql = "SELECT * FROM redcap_edocs_metadata WHERE doc_id=$edoc_id";
 	$result = db_query($sql);
 	while ($row = db_fetch_assoc($result)) {
-		_log("deleting old icon for icon $iconIndex -- edoc_id: $edoc_id");
 		unlink(EDOC_PATH . $row["stored_name"]);
 	}
 }
@@ -117,7 +116,7 @@ function sanitize(&$array) {
 
 file_put_contents("C:/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	file_put_contents("C:/log.txt", $str . "\n\n", FILE_APPEND);
+	file_put_contents("C:/log.txt", $str . "\n", FILE_APPEND);
 }
 /////////////
 /* strategy:
@@ -153,9 +152,19 @@ if (!empty($old_settings))
 
 _log("\$old_settings: " . print_r($old_settings, true));
 
+
+// collect old but still valid edoc ids (from iconForm)
+$all_new_edoc_ids = [];
+if (isset($new_settings['icons'])) {
+	foreach ($new_settings['icons'] as $index => $icon) {
+		if (!empty($new_settings['icons'][$index]['edoc_id'])) {
+			$all_new_edoc_ids[$index] = $new_settings['icons'][$index]['edoc_id'];
+		}
+	}
+}
+
 // save new icon files, collecting edoc_ids
 $message = "Configuration settings have been saved.";
-$uploaded_edoc_ids = [];
 $iconIndex = 0;
 $keys = array_keys($_FILES);
 foreach ($keys as $key) {
@@ -165,21 +174,9 @@ foreach ($keys as $key) {
 	if (!empty($errors)) {
 		$message .= "<br>" . implode("<br", $errors);
 	} elseif (!empty($edoc_id)) {
-		$uploaded_edoc_ids[$iconIndex] = $edoc_id;
-	}
-}
-
-// new icons have been saved, add edoc_ids to new settings that will be saved
-$all_new_edoc_ids = [];
-if (isset($new_settings['icons'])) {
-	foreach ($new_settings['icons'] as $index => $icon) {
-		if (!empty($uploaded_edoc_ids[$index])) {
-			$new_settings['icons'][$index]['edoc_id'] = intval($uploaded_edoc_ids[$index]);
-		}
-		if (!empty($new_settings['icons'][$index]['edoc_id'])) {
-			$new_settings['icons'][$index]['edoc_id'] = intval($new_settings['icons'][$index]['edoc_id']);
-			$all_new_edoc_ids[] = intval($icon['edoc_id']);
-		}
+		_log("collected new icon file edoc_id for icon #$iconIndex: " . $edoc_id);
+		$all_new_edoc_ids[$iconIndex] = intval($edoc_id);
+		$new_settings['icons'][$iconIndex]['edoc_id'] = intval($edoc_id);
 	}
 }
 
@@ -190,14 +187,14 @@ if (isset($old_settings['icons'])) {
 	foreach ($old_settings['icons'] as $index => $icon) {
 		// if new settings don't include this edoc_id, then delete file
 		$id_needed = !(array_search(intval($icon['edoc_id']), $all_new_edoc_ids) === false);
-		_log("id needed for icon $index: " . json_encode($id_needed));
 		if (!empty($icon['edoc_id']) and !$id_needed) {
+			_log("deleting old icon for icon $index -- edoc_id: " . $icon['edoc_id']);
 			delete_icon_file($icon['edoc_id'], $index);
 		}
 	}
 }
 
-_log("settings after adding uploaded_edoc_ids...\n" . print_r($new_settings, true));
+_log("Final settings after adding uploaded_edoc_ids...\n" . print_r($new_settings, true));
 
 $module->framework->setProjectSetting($form_name, json_encode($new_settings));
 
