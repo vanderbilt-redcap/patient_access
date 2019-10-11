@@ -21,7 +21,7 @@
 	margin-right: 8px;
 	margin-bottom: 8px;
 	border: 1px solid #007adf;
-	max-width: 400px;
+	width: 500px;
 }
 
 .link-buttons {
@@ -40,4 +40,19 @@
 .smaller-text {
 	font-size: 0.7rem;
 	padding: .325rem;
+}
+
+#footer-links {
+	display: none;
+	flex-direction: column;
+	
+	border: 1px solid #007adf;
+	max-width: 1000px;
+}
+
+.footer-link {
+	display: flex;
+	flex-direction: column;
+	
+	margin: 12px;
 }

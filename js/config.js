@@ -233,9 +233,9 @@ PatientAccessSplit.deleteLink = function(link) {
 	PatientAccessSplit.renumberLinks()
 }
 PatientAccessSplit.newFooterLink = function() {
-	$("#footer-links").css('display', 'block')
+	$("#footer-links").css('display', 'flex')
 	$('#footer-links').append("\
-					<div class='footer-link mt-1'>\
+					<div class='footer-link mt-2'>\
 						<div class='ml-2 row'>\
 							<span class='mt-1'></span>\
 							<button type='button' class='btn btn-outline-secondary smaller-text delete-footer-link ml-3'><i class='fas fa-trash-alt'></i></i> Delete Link</button>\
