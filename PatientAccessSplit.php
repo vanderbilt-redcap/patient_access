@@ -96,7 +96,6 @@ EOF;
 	}
 	
 	function make_config_page($form_name) {
-		file_put_contents("C:/root/log.txt", "form name: $form_name");
 		?>
 		<h5 class="mt-3">Dashboard Title</h5>
 		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
