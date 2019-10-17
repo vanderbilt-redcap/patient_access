@@ -24,8 +24,6 @@ if ($data['action'] == "get_config_page") {
 
 	if (count($surveys) == 0) {
 		echo "<p>Please enable surveys and add a survey instrument before configuring the dashboard.</p>";
-	} elseif (count($surveys) == 1) {
-		echo $module->make_config_page($surveys[0]["form_name"]);
 	} else {
 		?>
 		<div>
