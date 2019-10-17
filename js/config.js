@@ -99,7 +99,7 @@ $("body").on('click', '#save_changes', function(i, e) {
 	
 	var settings = {}
 	var form_data = new FormData()
-	
+	console.log('formname', PatientAccessSplit.formName)
 	settings.form_name = PatientAccessSplit.formName
 	if ($("#dashboard_title").val())
 		settings.dashboard_title = $("#dashboard_title").val()
