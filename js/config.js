@@ -19,9 +19,51 @@ $(".form_picker_dd a").click(function(i, e) {
 	$("#form_picker").text($(this).text())
 })
 
+// dashboard logo/image upload
+$('body').on('change', ".logo-upload .custom-file-input", function() {
+	// var iconForm = $(this).closest('.icon-form')
+	// $(iconForm).attr('data-icon-edoc-id', null)
+	var fileName = $(this).val().split('\\').pop()
+	// $(this).next('.custom-file-label').html(fileName)
+	$('.logo-upload .custom-file-label').html(fileName)
+	
+	var fileCount = $(this).prop('files').length
+	if (fileCount > 0) {
+		// throw warning if more than 20 files attached
+		var currentInput = this
+		var filesAttached = 0
+		$('.custom-file-input').each(function(i, input) {
+			if ($(input).prop('files')[0])
+				filesAttached ++
+			if (filesAttached > PatientAccessSplit.max_file_uploads) {
+				$('.logo-upload .custom-file-label').html("Choose an image")
+				simpleDialog("This instance of REDCap can only upload " + PatientAccessSplit.max_file_uploads + " files at a time. Please save changes and continue adding icons.")
+				return
+			}
+		})
+		
+		if (filesAttached <= PatientAccessSplit.max_file_uploads) {
+			var reader = new FileReader()
+			reader.onloadend = function (e) {
+				var imgElement = "<img id='logo-preview-image' src='" + e.target.result + "'/>"
+				$('.logo-preview').html(imgElement)
+			}
+			reader.readAsDataURL($(this).prop('files')[0])
+		}
+	} else {
+		console.log('here')
+		$('#logo-preview-image').remove()
+	}
+})
+$('body').on('blur', ".logo-upload .custom-file-input", function() {
+	if ($(this).prop('files').length == 0) {
+		$('#logo-preview-image').remove()
+	}
+})
+
 // ICONS
 // change label on uploaded file
-$('body').on('change', ".custom-file-input", function() {
+$('body').on('change', "#icons .custom-file-input", function() {
 	var iconForm = $(this).closest('.icon-form')
 	$(iconForm).attr('data-icon-edoc-id', null)
 	var fileName = $(this).val().split('\\').pop()
@@ -51,6 +93,11 @@ $('body').on('change', ".custom-file-input", function() {
 			reader.readAsDataURL($(this).prop('files')[0])
 		}
 	} else {
+		$(this).closest('.icon-form').find('.preview img').remove()
+	}
+})
+$('body').on('blur', "#icons .custom-file-input", function() {
+	if ($(this).prop('files').length == 0) {
 		$(this).closest('.icon-form').find('.preview img').remove()
 	}
 })
@@ -103,6 +150,12 @@ $("body").on('click', '#save_changes', function(i, e) {
 	settings.form_name = PatientAccessSplit.formName
 	if ($("#dashboard_title").val())
 		settings.dashboard_title = $("#dashboard_title").val()
+	
+	// logo/image for dashboard
+	var logoInput = $('.logo-upload .custom-file-input')
+	if (logoInput.prop('files') && logoInput.prop('files')[0]) {
+		form_data.append('dashboard-logo', logoInput.prop('files')[0])
+	}
 	
 	// add icons and links
 	settings.icons = []

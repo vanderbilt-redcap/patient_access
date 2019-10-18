@@ -47,7 +47,7 @@ function file_upload_max_size() {
   return $max_size;
 }
 
-function save_icon($file, $iconIndex) {
+function save_icon($file, $img_name) {
 // return saved icon's edoc_id
 // or collect $errors and return NULL
 	global $module;
@@ -58,17 +58,17 @@ function save_icon($file, $iconIndex) {
 	
 	// check for transfer errors
 	if ($file["error"] !== 0) {
-		$errors[] = "There was a file transfer error for icon #$iconIndex.";
+		$errors[] = "There was a file transfer error for $img_name.";
 	}
 	
 	// have file, so check name, size
 	$filename = $file["name"];
 	if (preg_match("/[^A-Za-z0-9. ()-]/", $filename)) {
-		$errors[] = "Filename for icon #$iconIndex had characters other than what is allowed: A-Z a-z 0-9 . ( ) -";
+		$errors[] = "Filename for $img_name had characters other than what is allowed: A-Z a-z 0-9 . ( ) -";
 	}
 	
 	if (strlen($filename) > 127) {
-		$errors[] = "Filename for icon #$iconIndex has a name that exceeds the limit of 127 characters.";
+		$errors[] = "Filename for $img_name has a name that exceeds the limit of 127 characters.";
 	}
 	
 	$maxsize = file_upload_max_size();
@@ -76,16 +76,16 @@ function save_icon($file, $iconIndex) {
 		if ($file["size"] > $maxsize) {
 			$fileReadable = humanFileSize($file["size"], "MB");
 			$serverReadable = humanFileSize($maxsize, "MB");
-			$errors[] = "File size for icon #$iconIndex ($fileReadable) exceeds server maximum upload size of $serverReadable.";
+			$errors[] = "File size for $img_name ($fileReadable) exceeds server maximum upload size of $serverReadable.";
 		}
 	}
 	
 	if(!exif_imagetype($file['tmp_name'])) {
-		$errors[] = "File for icon #$iconIndex does not appear to be an image (.jpg, .jpeg, .png, .svg, or .gif).";
+		$errors[] = "File for $img_name does not appear to be an image (.jpg, .jpeg, .png, .svg, or .gif).";
 	}
 	
 	if (!empty($errors)) {
-		$errors[] = "Due to the error(s) above, the icon file for icon #$iconIndex wasn't saved in the settings. You can correct the errors and try to upload again.";
+		$errors[] = "Due to the error(s) above, the icon file for $img_name wasn't saved in the settings. You can correct the errors and try to upload again.";
 		return;
 	} else {
 		// save file and return edoc_id
@@ -115,9 +115,9 @@ function sanitize(&$array) {
 }
 
 // uncomment to log locally
-// file_put_contents("C:/log.txt", __FILE__ . " log:\n");
+file_put_contents("C:/vumc/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	// file_put_contents("C:/log.txt", $str . "\n", FILE_APPEND);
+	file_put_contents("C:/vumc/log.txt", $str . "\n", FILE_APPEND);
 }
 /////////////
 /* strategy:
@@ -127,6 +127,7 @@ function _log($str) {
 */
 
 // _log("\$_FILES: " . print_r($_FILES, true));
+// _log("\$_POST: " . print_r($_POST, true));
 
 // sanitize new settings
 if (isset($_POST['settings'])) {
@@ -164,18 +165,38 @@ if (isset($new_settings['icons'])) {
 	}
 }
 
-// save new icon files, collecting edoc_ids
+// message we will send back: will append errors
 $message = "Configuration settings have been saved.";
+
+// save new dashboard logo if uploaded
+if (!empty($_FILES['dashboard-logo'])) {
+	$errors = [];
+	$edoc_id = save_icon($_FILES['dashboard-logo'], 'the dashboard logo');
+	if (!empty($errors)) {
+		$message .= "<br>" . implode("<br", $errors);
+	} else {
+		// delete old icon if exists
+		if (!empty($old_settings['dashboard-logo'])) {
+			delete_icon_file($old_settings['dashboard-logo']);
+		}
+		_log("collected new logo/image file for $img_name: " . $edoc_id);
+		$new_settings['dashboard-logo'] = intval($edoc_id);
+	}
+	unset($_FILES['dashboard-logo']);
+}
+
+// save new icon files, collecting edoc_ids
 $iconIndex = 0;
 $keys = array_keys($_FILES);
 foreach ($keys as $key) {
 	$iconIndex = intval(array_pop(explode("-", $key)));
+	$img_name = "icon #$iconIndex";
 	$errors = [];
-	$edoc_id = save_icon($_FILES[$key], $iconIndex);
+	$edoc_id = save_icon($_FILES[$key], $img_name);
 	if (!empty($errors)) {
 		$message .= "<br>" . implode("<br", $errors);
 	} elseif (!empty($edoc_id)) {
-		_log("collected new icon file edoc_id for icon #$iconIndex: " . $edoc_id);
+		_log("collected new icon file edoc_id for $img_name: " . $edoc_id);
 		$all_new_edoc_ids[$iconIndex] = intval($edoc_id);
 		$new_settings['icons'][$iconIndex]['edoc_id'] = intval($edoc_id);
 	}

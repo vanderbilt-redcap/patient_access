@@ -100,6 +100,15 @@ EOF;
 		<h5 class="mt-3">Dashboard Title</h5>
 		<input type="text" style="width: 400px" class="form-control" id="dashboard_title" aria-describedby="dashboard_title"></input>
 		
+		<h3 id='logo-title' class='mt-3'>Dashboard Image/Logo</h3>
+		<div class='logo-upload custom-file'>
+			<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>
+			<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an image</label>
+		</div>
+		<div class='logo-preview'>
+			
+		</div>
+		
 		<h5 class='mt-3'>Icons</h5>
 		<button type='button' class='btn btn-outline-secondary small-text new-icon'><i class="fas fa-plus"></i> New Icon</button>
 		<div id='icons' class='mt-3'>
@@ -125,6 +134,15 @@ EOF;
 				if (isset($icon['edoc_id']))
 					echo $this->get_icon_img($rich_settings, $i);
 			}
+			
+			if (!empty($rich_settings['dashboard-logo'])) {
+				$path = EDOC_PATH . $rich_settings['dashboard-logo']['stored_name'];
+				$uri = base64_encode(file_get_contents($path));
+				if (!empty($uri)) {
+					$iconSrc = "data: {$rich_settings['dashboard-logo']["mime_type"]};base64,$uri";
+					echo "<img style='display: none' id='logo-preview-image' src = '$iconSrc'>";
+				}
+			}
 			unset($rich_settings);
 			
 			?>
@@ -133,6 +151,11 @@ EOF;
 				PatientAccessSplit.max_file_uploads = JSON.parse('<?=ini_get("max_file_uploads")?>')
 				if (PatientAccessSplit.settings.dashboard_title) {
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
+				}
+				if ($('#logo-preview-image').length > 0) {
+					// console.log('len', ("#logo-preview-image").length)
+					
+					$("div.logo-preview").append($("#logo-preview-image").show().detach())
 				}
 				for (var i in PatientAccessSplit.settings.icons) {
 					var icon = PatientAccessSplit.settings.icons[i]
@@ -198,6 +221,22 @@ EOF;
 				}
 			}
 		}
+		
+		// handle similar for dashboard-logo
+		if (!empty($settings['dashboard-logo'])) {
+			// file_put_contents("C:/vumc/log.txt", 'not empty ' . $settings['dashboard-logo']);
+			$result = db_query("SELECT doc_id, stored_name, mime_type FROM redcap_edocs_metadata WHERE doc_id=" . $settings['dashboard-logo']);
+			while ($row = db_fetch_assoc($result)) {
+				_log("enriching dashboard-logo setting: " . $row['stored_name']);
+				$edoc_id = $settings['dashboard-logo'];
+				$settings['dashboard-logo'] = [
+					"edoc_id" => $edoc_id,
+					"stored_name" => $row["stored_name"],
+					"mime_type" => $row["mime_type"]
+				];
+			}
+		}
+		
 		return $settings;
 	}
 	
