@@ -26,6 +26,16 @@ body, #pagecontainer {
 	text-align: center;
 }
 
+#dash-logo {
+	max-width: 80%;
+	max-height: 8%;
+	height: 250px;
+}
+#dash-logo img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
 #icons {
 	display: flex;
 	flex-direction: row;

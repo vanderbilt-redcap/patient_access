@@ -17,8 +17,18 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// start building html string
 		$html = '
 <div id="dashboard">
-	<h2 class="title mt-2 mb-2">' . $settings['dashboard_title'] . '</h2>
-	<div id="icons">';
+	<h2 class="title my-3">' . $settings['dashboard_title'] . '</h2>';
+	
+	if (!empty($settings['dashboard-logo'])) {
+		file_put_contents("C:/vumc/log.txt", "dblogo stored_path: " .  strval($settings['dashboard-logo']['stored_name']));
+		$uri = base64_encode(file_get_contents(EDOC_PATH . $settings['dashboard-logo']['stored_name']));
+		$iconSrc = "data: {$settings['dashboard-logo']['mime_type']};base64,$uri";
+		$html .= "\
+		<div id='dash-logo' class='my-3'><img src='$iconSrc'></div>";
+	}
+	
+	$html .='
+	<div id="icons" class="my-3">';
 		
 		foreach ($settings["icons"] as $i => $icon) {
 			$uri = base64_encode(file_get_contents(EDOC_PATH . $icon["stored_name"]));
@@ -113,7 +123,15 @@ EOF;
 		<button type='button' class='btn btn-outline-secondary small-text new-icon'><i class="fas fa-plus"></i> New Icon</button>
 		<div id='icons' class='mt-3'>
 		</div>
-		
+		<ul id="sortable">
+		  <li class=""><span class=""></span>Item 1</li>
+		  <li class=""><span class=""></span>Item 2</li>
+		  <li class="ui-state-default"><span class=""></span>Item 3</li>
+		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 4</span></li>
+		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 5</span></li>
+		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 6</span></li>
+		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 7</span></li>
+		</ul>
 		<h5 class='mt-3'>Footer Links</h5>
 		<button type='button' class='btn btn-outline-secondary small-text new-footer-link'><i class="fas fa-plus"></i> New Footer Link</button>
 		<div id='footer-links' class='mt-3'>

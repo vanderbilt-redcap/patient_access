@@ -115,9 +115,9 @@ function sanitize(&$array) {
 }
 
 // uncomment to log locally
-file_put_contents("C:/vumc/log.txt", __FILE__ . " log:\n");
+// file_put_contents("C:/vumc/log.txt", __FILE__ . " log:\n");
 function _log($str) {
-	file_put_contents("C:/vumc/log.txt", $str . "\n", FILE_APPEND);
+	// file_put_contents("C:/vumc/log.txt", $str . "\n", FILE_APPEND);
 }
 /////////////
 /* strategy:
@@ -126,8 +126,8 @@ function _log($str) {
 	delete any old, unnecessary edocs
 */
 
-// _log("\$_FILES: " . print_r($_FILES, true));
-// _log("\$_POST: " . print_r($_POST, true));
+_log("\$_FILES: " . print_r($_FILES, true));
+_log("\$_POST: " . print_r($_POST, true));
 
 // sanitize new settings
 if (isset($_POST['settings'])) {

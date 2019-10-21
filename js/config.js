@@ -15,6 +15,13 @@ $(".form_picker_dd a").click(function(i, e) {
 		dataType: "html"
 	}).always(function(msg) {
 		$("#form_assocs").html(msg)
+		$("#icons").sortable({
+			opacity: 0.7,
+			helper: 'clone',
+			placeholder: "ui-state-highlight icon-form",
+			tolerance: 'pointer'
+		})
+		$("#icons").disableSelection()
 	})
 	$("#form_picker").text($(this).text())
 })
@@ -51,7 +58,6 @@ $('body').on('change', ".logo-upload .custom-file-input", function() {
 			reader.readAsDataURL($(this).prop('files')[0])
 		}
 	} else {
-		console.log('here')
 		$('#logo-preview-image').remove()
 	}
 })
@@ -155,6 +161,8 @@ $("body").on('click', '#save_changes', function(i, e) {
 	var logoInput = $('.logo-upload .custom-file-input')
 	if (logoInput.prop('files') && logoInput.prop('files')[0]) {
 		form_data.append('dashboard-logo', logoInput.prop('files')[0])
+	} else if (PatientAccessSplit.settings['dashboard-logo']) {
+		settings['dashboard-logo'] = PatientAccessSplit.settings['dashboard-logo']
 	}
 	
 	// add icons and links
@@ -241,7 +249,7 @@ PatientAccessSplit.newIcon = function() {
 	var icons = $('#icons')
 	var index = $(icons).children().length
 	var newIconForm = "\
-			<div class='icon-form'>\
+			<div class='icon-form ui-state-default'>\
 				<button type='button' class='btn btn-outline-secondary smaller-text delete-icon'><i class='fas fa-trash-alt'></i> Delete Icon</button>\
 				<div class='icon-upload custom-file mt-2'>\
 					<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>\
