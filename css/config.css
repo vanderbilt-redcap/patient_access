@@ -78,3 +78,7 @@
 	
 	margin: 12px;
 }
+
+.json-upload {
+	max-width: 500px;
+}

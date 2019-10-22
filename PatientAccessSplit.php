@@ -112,8 +112,8 @@ EOF;
 		
 		<h3 id='logo-title' class='mt-3'>Dashboard Image/Logo</h3>
 		<div class='logo-upload custom-file'>
-			<input type='file' class='custom-file-input' id='icon-upload-" + index + "' aria-describedby='upload'>
-			<label class='custom-file-label text-truncate' for='icon-upload-" + index + "'>Choose an image</label>
+			<input type='file' class='custom-file-input' id='logo-input' aria-describedby='upload'>
+			<label class='custom-file-label text-truncate' for='logo-input'>Choose an image</label>
 		</div>
 		<div class='logo-preview'>
 			
@@ -123,15 +123,6 @@ EOF;
 		<button type='button' class='btn btn-outline-secondary small-text new-icon'><i class="fas fa-plus"></i> New Icon</button>
 		<div id='icons' class='mt-3'>
 		</div>
-		<ul id="sortable">
-		  <li class=""><span class=""></span>Item 1</li>
-		  <li class=""><span class=""></span>Item 2</li>
-		  <li class="ui-state-default"><span class=""></span>Item 3</li>
-		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 4</span></li>
-		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 5</span></li>
-		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 6</span></li>
-		  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s">Item 7</span></li>
-		</ul>
 		<h5 class='mt-3'>Footer Links</h5>
 		<button type='button' class='btn btn-outline-secondary small-text new-footer-link'><i class="fas fa-plus"></i> New Footer Link</button>
 		<div id='footer-links' class='mt-3'>
@@ -139,6 +130,13 @@ EOF;
 		
 		<br>
 		<button id='save_changes' class='btn btn-outline-primary mt-3' type='button'>Save Changes</button>
+		<div id='json-buttons' class='d-flex my-3'>
+			<button class='btn btn-outline-secondary' onclick='PatientAccessSplit.downloadJSON("patient_access_module_settings_" + new Date().getTime(), JSON.stringify(PatientAccessSplit.settings))'>Settings Export</button>
+			<div class='json-upload custom-file ml-3'>
+				<input type='file' class='custom-file-input' id='json-import' aria-describedby='upload'>
+				<label class='custom-file-label text-truncate' for='json-import'>Settings Import</label>
+			</div>
+		</div>
 		<link rel="stylesheet" href="<?=$this->getUrl('css/config.css')?>"/>
 		<?php
 		$settings = $this->framework->getProjectSetting($form_name);
