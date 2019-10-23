@@ -23,7 +23,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		$uri = base64_encode(file_get_contents(EDOC_PATH . $settings['dashboard-logo']['stored_name']));
 		$iconSrc = "data: {$settings['dashboard-logo']['mime_type']};base64,$uri";
 		$html .= "\
-		<div id='dash-logo' class='my-3'><img src='$iconSrc'></div>";
+		<div id='dash-logo' class='mt-3'><img src='$iconSrc'></div>";
 	}
 	
 	$html .='
