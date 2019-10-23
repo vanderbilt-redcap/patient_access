@@ -64,6 +64,7 @@ $('body').on('change', ".logo-upload .custom-file-input", function() {
 $('body').on('blur', ".logo-upload .custom-file-input", function() {
 	if ($(this).prop('files').length == 0) {
 		$('#logo-preview-image').remove()
+		$('.logo-preview').removeAttr('data-edoc-id', null)
 	}
 })
 
@@ -105,6 +106,7 @@ $('body').on('change', "#icons .custom-file-input", function() {
 $('body').on('blur', "#icons .custom-file-input", function() {
 	if ($(this).prop('files').length == 0) {
 		$(this).closest('.icon-form').find('.preview img').remove()
+		$(this).closest('.icon-form').removeAttr('data-icon-edoc-id', null)
 	}
 })
 
@@ -150,9 +152,9 @@ $("body").on('click', '#save_changes', function(i, e) {
 	var files_attached = 0
 	//
 	
-	var settings = {}
 	var form_data = new FormData()
 	
+	var settings = {}
 	settings.form_name = PatientAccessSplit.formName
 	if ($("#dashboard_title").val())
 		settings.dashboard_title = $("#dashboard_title").val()
@@ -161,8 +163,10 @@ $("body").on('click', '#save_changes', function(i, e) {
 	var logoInput = $('.logo-upload .custom-file-input')
 	if (logoInput.prop('files') && logoInput.prop('files')[0]) {
 		form_data.append('dashboard-logo', logoInput.prop('files')[0])
-	} else if (PatientAccessSplit.settings['dashboard-logo']) {
-		settings['dashboard-logo'] = PatientAccessSplit.settings['dashboard-logo']
+	} else {
+		if ($('.logo-preview').attr('data-edoc-id')) {
+			settings['dashboard-logo'] = PatientAccessSplit.settings['dashboard-logo']
+		}
 	}
 	
 	// add icons and links
@@ -226,7 +230,6 @@ $("body").on('click', '#save_changes', function(i, e) {
 	})
 	
 	form_data.append('settings', JSON.stringify(settings))
-	PatientAccessSplit.settings = settings
 	
 	$.ajax({
 		url: PatientAccessSplit.saveConfigUrl,
@@ -238,6 +241,9 @@ $("body").on('click', '#save_changes', function(i, e) {
 		type: 'POST',
 		success: function(response){
 			simpleDialog(response.message)
+			if (response.new_settings) {
+				PatientAccessSplit.settings = JSON.parse(response.new_settings)
+			}
 		},
 		error: function(response){
 			simpleDialog(response.message)

@@ -222,5 +222,6 @@ $module->framework->setProjectSetting($form_name, json_encode($new_settings));
 
 echo json_encode([
 	"success" => true,
-	"message" => "$message"
+	"message" => "$message",
+	"new_settings" => json_encode($new_settings)
 ]);

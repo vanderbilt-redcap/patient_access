@@ -151,6 +151,7 @@ EOF;
 			}
 			
 			if (!empty($rich_settings['dashboard-logo'])) {
+				$logo_edoc_id = $rich_settings['dashboard-logo']['edoc_id'];
 				$path = EDOC_PATH . $rich_settings['dashboard-logo']['stored_name'];
 				$uri = base64_encode(file_get_contents($path));
 				if (!empty($uri)) {
@@ -168,9 +169,8 @@ EOF;
 					$("#dashboard_title").val(PatientAccessSplit.htmlDecode(PatientAccessSplit.settings.dashboard_title))
 				}
 				if ($('#logo-preview-image').length > 0) {
-					// console.log('len', ("#logo-preview-image").length)
-					
 					$("div.logo-preview").append($("#logo-preview-image").show().detach())
+					$('.logo-preview').attr('data-edoc-id', <?=$logo_edoc_id?>)
 				}
 				for (var i in PatientAccessSplit.settings.icons) {
 					var icon = PatientAccessSplit.settings.icons[i]
