@@ -351,3 +351,44 @@ PatientAccessSplit.downloadJSON = function(filename, data) {
         document.body.removeChild(elem);
     }
 }
+
+// ICONS
+// change label on uploaded file
+$('body').on('change', "#json-import", function() {
+	var files = $(this).prop('files')
+	if (files[0]) {
+		var data = {
+			form_name: PatientAccessSplit.formName
+		}
+		var file_reader = new FileReader()
+		file_reader.onload = function(e) {
+			data.settings = JSON.parse(e.target.result)
+			// console.log('sending ajax...')
+			$.ajax({
+				method: 'POST',
+				dataType: 'json',
+				url: PatientAccessSplit.importSettingsUrl,
+				data: {
+					json: JSON.stringify(data)
+				},
+				// processData: false
+			}).always(function(response) {
+				// console.log('response:', response)
+				if (response.alert) {
+					simpleDialog(response.alert)
+				}
+				if (response.html) {
+					$("#form_assocs").html(response.html)
+					$("#icons").sortable({
+						opacity: 0.7,
+						helper: 'clone',
+						placeholder: "ui-state-highlight icon-form",
+						tolerance: 'pointer'
+					})
+					$("#icons").disableSelection()
+				}
+			})
+		}
+		file_reader.readAsText(files[0], "UTF-8")
+	}
+})

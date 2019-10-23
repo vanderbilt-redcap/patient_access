@@ -20,7 +20,6 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 	<h2 class="title my-3">' . $settings['dashboard_title'] . '</h2>';
 	
 	if (!empty($settings['dashboard-logo'])) {
-		file_put_contents("C:/vumc/log.txt", "dblogo stored_path: " .  strval($settings['dashboard-logo']['stored_name']));
 		$uri = base64_encode(file_get_contents(EDOC_PATH . $settings['dashboard-logo']['stored_name']));
 		$iconSrc = "data: {$settings['dashboard-logo']['mime_type']};base64,$uri";
 		$html .= "\
@@ -142,7 +141,7 @@ EOF;
 		$settings = $this->framework->getProjectSetting($form_name);
 		if (!empty($settings)){
 			$settings = json_decode($settings, true);
-			
+			// file_put_contents("C:/vumc/log.txt", print_r($settings, true));
 			// add icons to document to be later moved via config js
 			$rich_settings = $this->add_icon_db_info($settings);
 			_log("inital rich settings:\n" . print_r($rich_settings, true));

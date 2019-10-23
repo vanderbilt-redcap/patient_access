@@ -5,6 +5,7 @@ if (!empty($_POST)) {
 	$data['action'] = filter_var($data['action'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 	$data['form_name'] = filter_var($data['form_name'], FILTER_SANITIZE_STRING, FILTER_NULL_ON_FAILURE);
 }
+
 if ($data['action'] == "get_config_page") {
 	echo $module->make_config_page($data['form_name']);
 } else {
@@ -47,7 +48,8 @@ if ($data['action'] == "get_config_page") {
 		<script>
 			PatientAccessSplit = {
 				configAjaxUrl: <?=json_encode($module->getUrl("config.php"))?>,
-				saveConfigUrl: <?=json_encode($module->getUrl("save_changes.php"))?>
+				saveConfigUrl: <?=json_encode($module->getUrl("save_changes.php"))?>,
+				importSettingsUrl: <?=json_encode($module->getUrl("import.php"))?>,
 			}
 		</script>
 		<script type="text/javascript" src="<?=$module->getUrl("js/config.js")?>"></script>
