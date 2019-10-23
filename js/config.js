@@ -226,6 +226,7 @@ $("body").on('click', '#save_changes', function(i, e) {
 	})
 	
 	form_data.append('settings', JSON.stringify(settings))
+	PatientAccessSplit.settings = settings
 	
 	$.ajax({
 		url: PatientAccessSplit.saveConfigUrl,
