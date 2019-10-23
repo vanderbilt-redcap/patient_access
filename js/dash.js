@@ -53,6 +53,8 @@ PatientAccessModule.openLink = function(url) {
 	$("#pagecontainer").css('margin', '0px')
 	$("#pagecontainer").css('max-width', 'none')
 	$("#dashboard").css('max-width', '20%')
+	$("#dashboard").css('padding-left', '8px')
+	$("#dashboard").css('padding-right', '8px')
 	$("#dashboard").css('margin-top', '8px')
 	$(".icon").css('max-width', '64px')
 	$(".icon").css('max-height', '64px')
