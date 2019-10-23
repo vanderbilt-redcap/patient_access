@@ -17,7 +17,7 @@ class PatientAccessSplit extends \ExternalModules\AbstractExternalModule {
 		// start building html string
 		$html = '
 <div id="dashboard">
-	<h2 class="title my-3">' . $settings['dashboard_title'] . '</h2>';
+	<h2 class="title m3">' . $settings['dashboard_title'] . '</h2>';
 	
 	if (!empty($settings['dashboard-logo'])) {
 		$uri = base64_encode(file_get_contents(EDOC_PATH . $settings['dashboard-logo']['stored_name']));
