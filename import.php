@@ -5,12 +5,6 @@
 $request = json_decode($_POST['json'], true);
 // file_put_contents("C:/vumc/log.txt", "request:\n" . print_r($request, true) . "\n\n", FILE_APPEND);
 
-if (strlen($request['settings']) >= 1000000) {
-	echo json_encode([
-		'alert' => 'Your settings JSON import file exceeds the 1MB limit, import aborted.'
-	]);
-	return;
-}
 
 $decoded = $request['settings'];
 if ($request['form_name'] != $decoded['form_name']) {
