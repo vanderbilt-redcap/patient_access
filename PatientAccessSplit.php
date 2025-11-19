@@ -216,7 +216,6 @@ EOF;
 	function add_icon_db_info($settings) {
 		// build icons array so we can send 1 query to db for icon file paths
 		$edoc_ids = [];
-		$settings = $settings;
 		foreach ($settings["icons"] as $i => $icon) {
 			if (!empty($icon['edoc_id'])) {
 				$edoc_ids[] = $icon['edoc_id'];
