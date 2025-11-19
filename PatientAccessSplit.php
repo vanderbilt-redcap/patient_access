@@ -216,7 +216,6 @@ EOF;
 	function add_icon_db_info($settings) {
 		// build icons array so we can send 1 query to db for icon file paths
 		$edoc_ids = [];
-		$settings = $settings;
 		foreach ($settings["icons"] as $i => $icon) {
 			if (!empty($icon['edoc_id'])) {
 				$edoc_ids[] = $icon['edoc_id'];
@@ -258,7 +257,7 @@ EOF;
 	function get_icon_img($settings, $iconIndex) {
 		_log("fetching img for icon: $iconIndex");
 		if (!empty($settings) and !empty($settings['icons']) and !empty($settings['icons'][$iconIndex])) {
-			$path = EDOC_PATH . $settings['icons'][$iconIndex]['stored_name'];
+			$path = $this->getEdocPath($settings['icons'][$iconIndex]);
 			$uri = base64_encode(file_get_contents($path));
 			if (empty($uri))
 				return;
@@ -267,6 +266,17 @@ EOF;
 		} else {
 			
 		}
+	}
+
+
+	public function getEdocPath(array $icon_info) {
+		$edoc_id = $icon_info["edoc_id"];
+		$filename = $icon_info["stored_name"];
+		$pid = \Files::getEdocProjectId($edoc_id);
+		$edocPath = EDOC_PATH;
+		$edocPath .= !empty($pid) ? \Files::getLocalStorageSubfolder($pid, true) : '' ;
+
+		return $this->framework->getSafePath($filename, $edocPath);
 	}
 }
 

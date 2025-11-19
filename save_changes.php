@@ -89,7 +89,7 @@ function save_icon($file, $img_name) {
 		return;
 	} else {
 		// save file and return edoc_id
-		$new_edoc_id = $module->framework->saveFile($file['tmp_name']);
+		$new_edoc_id = \Files::uploadFile($file);
 		return $new_edoc_id;
 	}
 }
